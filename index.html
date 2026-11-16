@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>เรขาคณิตผจญภัย ป.6</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: drafting-paper grid world — a level map of 10 tiles, then a single question card with a 2×2 answer pad */
+:root{
+  --paper:#EAF0F4; --grid:rgba(40,96,200,.075); --card:#FFFFFF; --ink:#152238; --muted:#5A6781; --line:#D2DBE5; --soft:#F2F5F9;
+  --accent:#2F6FED; --accent-ink:#FFFFFF; --mark:#FFC83D; --good:#138A5E; --good-bg:#E2F5EC; --bad:#D9472F; --bad-bg:#FCE9E4;
+  --ch6:#E0533A; --ch7:#2F6FED; --ch8:#0E968F; --ch9:#C97A0E; --ch10:#BE3F86; --ch0:#152238;
+  --fig-fill:rgba(47,111,237,.10); --fig-line:#152238; --fig-hl:#2F6FED;
+  --p1:#2F6FED; --p2:#E0533A; --p3:#0E968F; --p4:#E5A21A; --p5:#8A63D2;
+  --display:'Mitr','IBM Plex Sans Thai',system-ui,sans-serif;
+  --body:'IBM Plex Sans Thai','Sarabun','Leelawadee UI',system-ui,sans-serif;
+  --shadow:0 1px 0 rgba(21,34,56,.04),0 8px 24px -12px rgba(21,34,56,.18);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1828; --grid:rgba(120,170,255,.07); --card:#14223A; --ink:#E6EDF7; --muted:#96A4BD; --line:#26385A; --soft:#1A2B47;
+  --accent:#6F9BFF; --accent-ink:#0D1828; --mark:#FFD25E; --good:#3CCB8F; --good-bg:rgba(60,203,143,.14); --bad:#FF7B66; --bad-bg:rgba(255,123,102,.14);
+  --ch6:#FF7B66; --ch7:#6F9BFF; --ch8:#2FC7BE; --ch9:#F0A93A; --ch10:#EE6FB2; --ch0:#FFD25E;
+  --fig-fill:rgba(111,155,255,.15); --fig-line:#E6EDF7; --fig-hl:#8FB3FF;
+  --p1:#6F9BFF; --p2:#FF7B66; --p3:#2FC7BE; --p4:#F0B43A; --p5:#B190F0;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 28px -14px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1828; --grid:rgba(120,170,255,.07); --card:#14223A; --ink:#E6EDF7; --muted:#96A4BD; --line:#26385A; --soft:#1A2B47;
+  --accent:#6F9BFF; --accent-ink:#0D1828; --mark:#FFD25E; --good:#3CCB8F; --good-bg:rgba(60,203,143,.14); --bad:#FF7B66; --bad-bg:rgba(255,123,102,.14);
+  --ch6:#FF7B66; --ch7:#6F9BFF; --ch8:#2FC7BE; --ch9:#F0A93A; --ch10:#EE6FB2; --ch0:#FFD25E;
+  --fig-fill:rgba(111,155,255,.15); --fig-line:#E6EDF7; --fig-hl:#8FB3FF;
+  --p1:#6F9BFF; --p2:#FF7B66; --p3:#2FC7BE; --p4:#F0B43A; --p5:#B190F0;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 28px -14px rgba(0,0,0,.6); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background-color:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;min-height:100vh}
+.app{max-width:1040px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.lv:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.25;margin:0;text-wrap:balance}
+
+/* ---------- top bar ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:48px;height:48px;flex:none;border-radius:14px;background:var(--ink);display:grid;place-items:center}
+.logo svg{width:32px;height:32px}
+.brand h1{font-size:clamp(1.35rem,3.6vw,1.8rem);font-weight:600;letter-spacing:.01em}
+.brand p{margin:0;color:var(--muted);font-size:.9rem}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);font-weight:600;font-variant-numeric:tabular-nums;font-size:.95rem}
+.pill svg{width:18px;height:18px}
+.ibtn{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);display:grid;place-items:center}
+.ibtn svg{width:20px;height:20px}
+.ibtn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tbtn{height:40px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-size:.9rem;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.tbtn[aria-pressed="true"]{background:var(--mark);border-color:var(--mark);color:#152238}
+
+/* ---------- intro ---------- */
+.intro{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:22px 24px;box-shadow:var(--shadow);margin-bottom:26px}
+.intro h2{font-size:clamp(1.3rem,3.2vw,1.75rem);margin-bottom:6px}
+.intro h2 mark{background:linear-gradient(transparent 58%,var(--mark) 58%);color:inherit;padding:0 2px}
+.intro p{margin:0;color:var(--muted);max-width:52ch}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rule{background:var(--soft);border-radius:14px;padding:12px;text-align:center}
+.rule b{display:block;font-family:var(--display);font-size:1.45rem;font-weight:500;line-height:1.2}
+.rule span{font-size:.8rem;color:var(--muted);line-height:1.35;display:block}
+.stars-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:.85rem;color:var(--muted)}
+.stars-legend span{display:inline-flex;align-items:center;gap:4px}
+.stars-legend svg{width:14px;height:14px}
+
+/* ---------- level map ---------- */
+.map-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.map-h h2{font-size:1.25rem}
+.map-h small{color:var(--muted)}
+.map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.lv{--c:var(--ch7);position:relative;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);transition:transform .18s ease,border-color .18s ease;min-width:0}
+.lv:not(.locked):hover{transform:translateY(-3px);border-color:var(--c)}
+.lv-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.lv-ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.lv-ico svg{width:26px;height:26px}
+.lv-num{font-family:var(--display);font-size:2rem;line-height:1;color:var(--c);font-weight:600;font-variant-numeric:tabular-nums}
+.lv-ch{font-size:.72rem;letter-spacing:.06em;color:var(--c);font-weight:700}
+.lv-name{font-family:var(--display);font-weight:500;font-size:1.02rem;line-height:1.3}
+.lv-topic{font-size:.8rem;color:var(--muted);line-height:1.4;flex:1}
+.lv-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--line);padding-top:8px}
+.st{display:flex;gap:2px}
+.st svg{width:18px;height:18px}
+.st .on{fill:var(--mark);stroke:color-mix(in srgb,var(--mark) 70%,#000)}
+.st .off{fill:none;stroke:var(--line);stroke-width:1.5}
+.lv-best{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.lv.locked{cursor:not-allowed;box-shadow:none;background:var(--soft)}
+.lv.locked .lv-ico,.lv.locked .lv-num,.lv.locked .lv-ch{color:var(--muted);filter:grayscale(1)}
+.lv.locked .lv-ico{background:var(--line)}
+.lock{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:var(--card);border:1.5px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.lock svg{width:16px;height:16px}
+.lv.locked .lv-num{opacity:0}
+.lv.boss{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lv.boss .lv-topic,.lv.boss .lv-best{color:color-mix(in srgb,var(--paper) 70%,transparent)}
+.lv.boss .lv-ch,.lv.boss .lv-num,.lv.boss .lv-ico{color:var(--mark)}
+.lv.boss .lv-ico{background:color-mix(in srgb,var(--mark) 18%,transparent)}
+.lv.boss .lv-foot{border-color:color-mix(in srgb,var(--paper) 25%,transparent)}
+.lv.boss .st .off{stroke:color-mix(in srgb,var(--paper) 40%,transparent)}
+.lv.boss.locked{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.lv.boss.locked .lv-topic{color:var(--muted)}
+.teacher-bar{margin-top:18px;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:3px;padding:6px}
+.linkbtn.danger{color:var(--bad)}
+.foot{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
+
+/* ---------- quiz ---------- */
+.qtop{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.back{height:40px;padding:0 14px 0 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);display:inline-flex;align-items:center;gap:6px;font-weight:500}
+.back svg{width:18px;height:18px}
+.qlv{display:flex;flex-direction:column;min-width:0;flex:1}
+.qlv small{color:var(--c,var(--accent));font-weight:700;font-size:.75rem;letter-spacing:.05em}
+.qlv b{font-family:var(--display);font-weight:500;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score{font-family:var(--display);font-size:1.1rem;font-variant-numeric:tabular-nums}
+.segs{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:16px}
+.seg{height:8px;border-radius:4px;background:var(--line);transition:background .25s}
+.seg.cur{background:var(--ink)}
+.seg.ok{background:var(--good)}
+.seg.no{background:var(--bad)}
+.qcard{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:22px clamp(16px,3vw,30px) 24px;box-shadow:var(--shadow)}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.qno{font-weight:700;font-size:.82rem;letter-spacing:.06em;color:var(--muted)}
+.combo{font-size:.82rem;font-weight:700;color:#152238;background:var(--mark);padding:3px 10px;border-radius:999px}
+.qtext{font-family:var(--display);font-weight:400;font-size:clamp(1.12rem,2.6vw,1.38rem);line-height:1.5;margin:0 0 6px}
+.qtext .pi{font-family:var(--body);font-size:.8em;color:var(--muted);white-space:nowrap}
+.figwrap{display:flex;flex-direction:column;align-items:center;margin:10px 0 4px}
+.figwrap:empty{display:none}
+svg.fig{width:100%;max-width:400px;height:auto;overflow:visible}
+.fig .shape{fill:var(--fig-fill);stroke:var(--fig-line);stroke-width:2.5;stroke-linejoin:round}
+.fig .shape2{fill:color-mix(in srgb,var(--fig-hl) 26%,transparent);stroke:var(--fig-line);stroke-width:2.5;stroke-linejoin:round}
+.fig .hole{fill:var(--card);stroke:var(--fig-line);stroke-width:2.5}
+.fig .edge{stroke:var(--fig-line);stroke-width:2.5;fill:none}
+.fig .dash{stroke:var(--fig-hl);stroke-width:2;stroke-dasharray:6 5;fill:none}
+.fig .thin{stroke:var(--fig-line);stroke-width:1.5;fill:none}
+.fig .dot{fill:var(--fig-line)}
+.fig .lbl{fill:var(--ink);font:600 15px var(--body)}
+.fig .lbl.hl{fill:var(--fig-hl)}
+.fig .lbl.q{fill:var(--bad);font-size:18px}
+.fig .lbl.sm{font-size:13px;font-weight:500}
+.fig .plbl{fill:var(--ink);stroke:var(--card);stroke-width:4px;paint-order:stroke;font:700 14px var(--body)}
+.fig .p0{fill:var(--p1)}.fig .p1{fill:var(--p2)}.fig .p2{fill:var(--p3)}.fig .p3{fill:var(--p4)}.fig .p4{fill:var(--p5)}
+.fig .pslice{stroke:var(--card);stroke-width:2}
+.figcap{font-size:.75rem;color:var(--muted);text-align:center;margin:0 0 4px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px;border-radius:16px;border:2px solid var(--line);background:var(--card);font-size:1.05rem;font-weight:500;line-height:1.4;min-height:62px;transition:border-color .15s,background .15s,transform .1s;min-width:0}
+.opt:not(:disabled):hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--card))}
+.opt:not(:disabled):active{transform:scale(.98)}
+.opt .k{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--soft);font-family:var(--display);font-weight:500;font-size:1.05rem;color:var(--muted)}
+.opt span:last-child{min-width:0;overflow-wrap:anywhere}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--good);background:var(--good-bg)}
+.opt.correct .k{background:var(--good);color:var(--card)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
+.opt.wrong .k{background:var(--bad);color:var(--card)}
+.opt.dim{opacity:.5}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{margin-top:16px;border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;animation:rise .25s ease}
+.fb.ok{background:var(--good-bg)}
+.fb.no{background:var(--bad-bg)}
+.fb-ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--card)}
+.fb.ok .fb-ico{background:var(--good)}
+.fb.no .fb-ico{background:var(--bad)}
+.fb-ico svg{width:22px;height:22px}
+.fb h3{font-size:1.05rem}
+.fb.ok h3{color:var(--good)}
+.fb.no h3{color:var(--bad)}
+.fb p{margin:2px 0 0;font-size:.95rem;line-height:1.55}
+.fb p b{color:var(--ink)}
+.next{height:46px;padding:0 18px;border-radius:14px;border:0;background:var(--ink);color:var(--paper);font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.next svg{width:18px;height:18px}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hint{text-align:center;color:var(--muted);font-size:.78rem;margin-top:12px}
+
+/* ---------- result ---------- */
+.res{background:var(--card);border:1.5px solid var(--line);border-radius:24px;padding:28px clamp(16px,4vw,40px);box-shadow:var(--shadow);text-align:center}
+.res-stars{display:flex;justify-content:center;gap:10px;margin:6px 0 10px}
+.res-stars svg{width:64px;height:64px}
+.res-stars .on{fill:var(--mark);stroke:color-mix(in srgb,var(--mark) 70%,#000);animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.res-stars .off{fill:var(--soft);stroke:var(--line);stroke-width:1.5}
+.res-stars svg:nth-child(2) .on{animation-delay:.18s}
+.res-stars svg:nth-child(3) .on{animation-delay:.36s}
+@keyframes pop{from{transform:scale(0);transform-origin:center}to{transform:scale(1)}}
+.res h2{font-size:clamp(1.4rem,4vw,2rem)}
+.res .big{font-family:var(--display);font-size:3.2rem;line-height:1.1;font-variant-numeric:tabular-nums;margin:6px 0}
+.res .big small{font-size:1.4rem;color:var(--muted)}
+.res .msg{color:var(--muted);margin:0 auto 18px;max-width:46ch}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{height:48px;padding:0 20px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn svg{width:18px;height:18px}
+.review{margin-top:24px;text-align:left}
+.review h3{font-size:1.05rem;margin-bottom:10px}
+.rv{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.rv-q{font-weight:500;margin-bottom:4px}
+.rv-a{font-size:.9rem;color:var(--muted)}
+.rv-a .y{color:var(--bad);text-decoration:line-through}
+.rv-a .c{color:var(--good);font-weight:700}
+.rv-e{font-size:.88rem;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
+
+@media (max-width:900px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}.intro{grid-template-columns:1fr}}
+@media (max-width:560px){
+  .opts{grid-template-columns:1fr}
+  .fb{grid-template-columns:auto 1fr}
+  .fb .next{grid-column:1/-1;justify-content:center}
+  .rules{gap:6px}.rule{padding:10px 6px}
+  .tbtn span{display:none}
+}
+@media (max-width:380px){.map{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M4 26 L16 5 L28 26 Z" fill="none" stroke="#FFC83D" stroke-width="2.6" stroke-linejoin="round"/><circle cx="16" cy="19" r="5" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M4 26h24" stroke="#6F9BFF" stroke-width="2.6"/></svg>
+      </div>
+      <div>
+        <h1>เรขาคณิตผจญภัย ป.6</h1>
+        <p>คณิตศาสตร์ ป.6 เล่ม 2 · บทที่ 6–10</p>
+      </div>
+    </div>
+    <div class="tools">
+      <span class="pill" title="ดาวที่สะสมได้"><svg viewBox="0 0 24 24"><polygon class="on" fill="#FFC83D" stroke="#C9971A" points="12,2.5 14.9,8.6 21.5,9.3 16.5,13.8 18,20.4 12,17 6,20.4 7.5,13.8 2.5,9.3 9.1,8.6"/></svg><span id="totalStars">0/30</span></span>
+      <button class="ibtn" id="soundBtn" aria-pressed="true" aria-label="เปิด/ปิดเสียง" title="เสียง"></button>
+      <button class="tbtn" id="teacherBtn" aria-pressed="false" title="ปลดล็อกทุกด่าน"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><span>โหมดครู</span></button>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <main id="home">
+    <section class="intro">
+      <div>
+        <h2>ผ่านให้ครบ <mark>10 ด่าน</mark> เก็บดาวให้ได้ 30 ดวง</h2>
+        <p>โจทย์สุ่มใหม่ทุกครั้งที่เล่น ครอบคลุมรูปสามเหลี่ยม รูปหลายเหลี่ยม วงกลม รูปเรขาคณิตสามมิติ และแผนภูมิรูปวงกลม ตอบผิดก็มีวิธีคิดให้ดูทันที</p>
+        <div class="stars-legend">
+          <span><svg viewBox="0 0 24 24"><polygon fill="#FFC83D" points="12,2.5 14.9,8.6 21.5,9.3 16.5,13.8 18,20.4 12,17 6,20.4 7.5,13.8 2.5,9.3 9.1,8.6"/></svg> ถูก 6 ข้อ</span>
+          <span><svg viewBox="0 0 24 24"><polygon fill="#FFC83D" points="12,2.5 14.9,8.6 21.5,9.3 16.5,13.8 18,20.4 12,17 6,20.4 7.5,13.8 2.5,9.3 9.1,8.6"/></svg>×2 ถูก 8 ข้อ</span>
+          <span><svg viewBox="0 0 24 24"><polygon fill="#FFC83D" points="12,2.5 14.9,8.6 21.5,9.3 16.5,13.8 18,20.4 12,17 6,20.4 7.5,13.8 2.5,9.3 9.1,8.6"/></svg>×3 ถูกครบ 10 ข้อ</span>
+        </div>
+      </div>
+      <div class="rules">
+        <div class="rule"><b>10</b><span>ข้อต่อด่าน</span></div>
+        <div class="rule"><b>ก ข ค ง</b><span>เลือก 1 คำตอบ</span></div>
+        <div class="rule"><b>6/10</b><span>ปลดล็อกด่านถัดไป</span></div>
+      </div>
+    </section>
+
+    <div class="map-h"><h2>แผนที่ด่าน</h2><small>บทละ 2 ด่าน · บทที่ 10 มี 1 ด่าน · ปิดท้ายด้วยด่านบอส</small></div>
+    <div class="map" id="map"></div>
+    <div class="teacher-bar" id="teacherBar" hidden>
+      <button class="linkbtn danger" id="resetBtn">ล้างดาวทั้งหมด</button>
+    </div>
+    <p class="foot">อ้างอิงเนื้อหา: หนังสือเรียนรายวิชาพื้นฐานคณิตศาสตร์ ป.6 เล่ม 2 (สสวท.) · ใช้ π ≈ 22/7</p>
+  </main>
+
+  <!-- QUIZ -->
+  <main id="quiz" hidden>
+    <div class="qtop">
+      <button class="back" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>แผนที่</button>
+      <div class="qlv" id="qlv"><small id="qch"></small><b id="qname"></b></div>
+      <div class="score" id="score">0 คะแนน</div>
+    </div>
+    <div class="segs" id="segs"></div>
+    <section class="qcard">
+      <div class="qmeta"><span class="qno" id="qno"></span><span class="combo" id="combo" hidden></span></div>
+      <p class="qtext" id="qtext"></p>
+      <div class="figwrap" id="fig"></div>
+      <div class="opts" id="opts"></div>
+      <div id="fb"></div>
+    </section>
+    <p class="hint">กดแป้น 1–4 เพื่อเลือกคำตอบ และ Enter เพื่อไปข้อต่อไป</p>
+  </main>
+
+  <!-- RESULT -->
+  <main id="result" hidden>
+    <section class="res" id="res"></section>
+  </main>
+</div>
+<canvas id="fx" hidden></canvas>
+
+<script>
+/* ================= utilities ================= */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const r2=x=>Math.round(x*100)/100;
+const fmt=x=>r2(x).toLocaleString('en-US',{maximumFractionDigits:2});
+const isTri=s=>{const v=s.slice().sort((a,b)=>a-b);return v[2]<v[0]+v[1]};
+const rad=d=>d*Math.PI/180;
+const PI=' <span class="pi">(ใช้ π ≈ 22/7)</span>';
+
+function unitStr(v,u){return fmt(v)+(u==='°'||u==='%'?u:(u?' '+u:''))}
+function numQ(q,ans,unit,cands,exp,fig=''){
+  ans=r2(ans);const seen=new Set([ans]);const w=[];
+  for(let c of cands){c=r2(c);if(isFinite(c)&&c>0&&!seen.has(c)){seen.add(c);w.push(c)}if(w.length===3)break}
+  const step=Math.max(1,Math.round(ans*0.1));let k=1;
+  while(w.length<3){for(const c of [ans+k*step,ans-k*step]){if(w.length<3&&c>0&&!seen.has(c)){seen.add(c);w.push(c)}}k++}
+  return {q,ans:unitStr(ans,unit),opts:[ans,...w].map(v=>unitStr(v,unit)),exp,fig};
+}
+function txtQ(q,ans,wrongs,exp,fig=''){
+  const w=[...new Set(wrongs.filter(x=>x!==ans))].slice(0,3);
+  return {q,ans,opts:[ans,...w],exp,fig};
+}
+const factGen=bank=>()=>{const f=pick(bank);return txtQ(f.q,f.a,shuffle(f.w),f.e,f.fig?f.fig():'')};
+
+/* ================= figure helpers (SVG) ================= */
+const S=(w,h,inner,cap)=>`<svg class="fig" viewBox="0 0 ${w} ${h}" role="img" aria-hidden="true">${inner}</svg>`+(cap?`<p class="figcap">${cap}</p>`:'');
+const T=(x,y,s,c='lbl',a='middle')=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" class="${c}" text-anchor="${a}" dominant-baseline="middle">${s}</text>`;
+const P=(pts,c='shape')=>`<polygon class="${c}" points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}"/>`;
+const Ln=(a,b,c='edge')=>`<line class="${c}" x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}"/>`;
+const NOTE='รูปไม่ได้วาดตามมาตราส่วน';
+
+function fit(pts,W=380,H=230,pad=46){
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const mnx=Math.min(...xs),mxx=Math.max(...xs),mny=Math.min(...ys),mxy=Math.max(...ys);
+  const w=(mxx-mnx)||1,h=(mxy-mny)||1;const s=Math.min((W-2*pad)/w,(H-2*pad)/h);
+  const ox=(W-w*s)/2,oy=(H-h*s)/2;
+  return pts.map(([x,y])=>[ox+(x-mnx)*s,H-oy-(y-mny)*s]);
+}
+function triFromAngles(a,b){
+  const c=180-a-b;const AC=Math.sin(rad(b))/Math.sin(rad(c));
+  return fit([[0,0],[1,0],[AC*Math.cos(rad(a)),AC*Math.sin(rad(a))]]);
+}
+function triFromSides(s){ // s = [AB, BC, CA]
+  const [ab,bc,ca]=s;const cosA=(ab*ab+ca*ca-bc*bc)/(2*ab*ca);const A=Math.acos(Math.max(-1,Math.min(1,cosA)));
+  return fit([[0,0],[ab,0],[ca*Math.cos(A),ca*Math.sin(A)]]);
+}
+function triFig(pts,ang=[],side=[],extra='',cap){
+  const g=[(pts[0][0]+pts[1][0]+pts[2][0])/3,(pts[0][1]+pts[1][1]+pts[2][1])/3];
+  let s=P(pts)+extra;
+  pts.forEach((p,i)=>{if(!ang[i])return;const dx=g[0]-p[0],dy=g[1]-p[1],d=Math.hypot(dx,dy);const k=Math.min(36,d*.5);
+    s+=T(p[0]+dx/d*k,p[1]+dy/d*k,ang[i],ang[i]==='?'?'lbl q':'lbl sm')});
+  side.forEach((t,i)=>{if(!t)return;const a=pts[i],b=pts[(i+1)%3];const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    const dx=m[0]-g[0],dy=m[1]-g[1],d=Math.hypot(dx,dy)||1;s+=T(m[0]+dx/d*20,m[1]+dy/d*20,t,t==='?'?'lbl q':'lbl')});
+  return S(380,230,s,cap);
+}
+function rightMark(p,dx,dy,sz=11){return `<path class="thin" d="M${p[0]+dx*sz} ${p[1]} L${p[0]+dx*sz} ${p[1]+dy*sz} L${p[0]} ${p[1]+dy*sz}"/>`}
+function triArea(b,h,bl,hl){
+  const hh=Math.max(b*.38,Math.min(h,b*1.05));const cx=b*(.3+Math.random()*.4);
+  const pts=fit([[0,0],[b,0],[cx,hh]],380,230,40);
+  const C=pts[2],F=[C[0],pts[0][1]];
+  const extra=Ln(C,F,'dash')+rightMark(F,1,-1);
+  let s=P(pts)+extra+T((pts[0][0]+pts[1][0])/2,pts[0][1]+20,bl)+T(C[0]+10,(C[1]+F[1])/2,hl,hl==='?'?'lbl q':'lbl hl','start');
+  return S(380,230,s,NOTE);
+}
+function rightTri(b,h){
+  const hh=Math.max(b*.45,Math.min(h,b*1.6));
+  const pts=fit([[0,0],[b,0],[0,hh]],380,230,44);
+  return triFig(pts,[],[b+' ซม.','',h+' ซม.'],rightMark(pts[0],1,-1,13),NOTE);
+}
+function polyPts(n,cx=190,cy=118,r=92){
+  const st=90+180/n;const out=[];for(let i=0;i<n;i++){const a=rad(st+i*360/n);out.push([cx+r*Math.cos(a),cy+r*Math.sin(a)])}return out;
+}
+function polyFig(n,o={}){
+  const pts=polyPts(n);let s=P(pts);
+  if(o.diag){for(let i=2;i<n-1;i++)s+=Ln(pts[0],pts[i],'dash')}
+  const c=[190,118];
+  const lab=(i,t)=>{const a=pts[i],b=pts[(i+1)%n];const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];const dx=m[0]-c[0],dy=m[1]-c[1],d=Math.hypot(dx,dy);return T(m[0]+dx/d*20,m[1]+dy/d*20,t)};
+  if(o.side)s+=lab(n-1,o.side);
+  if(o.sides)o.sides.forEach((t,i)=>s+=lab(i,t));
+  pts.forEach(p=>s+=`<circle class="dot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/>`);
+  return S(380,236,s,o.sides?NOTE:'');
+}
+function trapFig(a,b,h){
+  const s=P([[50,182],[330,182],[255,58],[125,58]])+Ln([125,58],[125,182],'dash')+rightMark([125,182],1,-1)
+    +T(190,40,a)+T(190,204,b)+T(117,120,h,h==='?'?'lbl q':'lbl hl','end');
+  return S(380,220,s,NOTE);
+}
+function kiteFig(d1,d2,rh){
+  const p=rh?[[190,18],[300,112],[190,206],[80,112]]:[[190,18],[268,82],[190,206],[112,82]];
+  const my=p[1][1];
+  const s=P(p)+Ln(p[0],p[2],'dash')+Ln(p[3],p[1],'dash')+rightMark([190,my],1,-1,10)
+    +T(198,(my+206)/2+10,d1,'lbl hl','start')+T((p[3][0]+190)/2,my-14,d2,'lbl hl');
+  return S(380,224,s,NOTE);
+}
+function splitFig(d,h1,h2){
+  const A=[40,112],C=[340,112],B=[150,30],D=[240,196];
+  const s=P([A,B,C,D])+Ln(A,C,'edge')+Ln(B,[150,112],'dash')+Ln(D,[240,112],'dash')+rightMark([150,112],1,-1,9)+rightMark([240,112],-1,1,9)
+    +T(296,98,d,'lbl')+T(158,72,h1,'lbl hl','start')+T(248,154,h2,'lbl hl','start')
+    +T(28,112,'ก','lbl sm')+T(352,112,'ค','lbl sm')+T(150,16,'ข','lbl sm')+T(240,214,'ง','lbl sm');
+  return S(380,226,s,NOTE);
+}
+function houseFig(w,hr,ht){
+  const s=P([[90,100],[290,100],[290,196],[90,196]])+P([[90,100],[290,100],[190,26]],'shape2')+Ln([190,26],[190,100],'dash')+rightMark([190,100],1,-1,9)
+    +T(190,214,w)+T(82,148,hr,'lbl','end')+T(198,66,ht,'lbl hl','start');
+  return S(380,226,s,NOTE);
+}
+function circFig(mode,label){
+  const c=[190,112],r=88;let s=`<circle class="shape" cx="190" cy="112" r="${r}"/>`;
+  if(mode==='r'){s+=Ln(c,[c[0]+r,c[1]],'edge')+T(c[0]+r/2,c[1]-14,label,label==='?'?'lbl q':'lbl hl')}
+  if(mode==='d'){s+=Ln([c[0]-r,c[1]],[c[0]+r,c[1]],'edge')+T(c[0],c[1]-14,label,label==='?'?'lbl q':'lbl hl')}
+  s+=`<circle class="dot" cx="190" cy="112" r="4"/>`;
+  return S(380,224,s);
+}
+function partsFig(){
+  const c=[190,112],r=90,pt=a=>[c[0]+r*Math.cos(rad(a)),c[1]+r*Math.sin(rad(a))];
+  const A=pt(-55),B=pt(180),C=pt(0),D=pt(115),E=pt(55);
+  let s=`<circle class="shape" cx="190" cy="112" r="${r}"/>`+Ln(c,A)+Ln(B,C)+Ln(D,E);
+  [[A,'A',-55],[B,'B',180],[C,'C',0],[D,'D',115],[E,'E',55]].forEach(([p,t,a])=>{s+=`<circle class="dot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/>`+T(c[0]+(r+16)*Math.cos(rad(a)),c[1]+(r+16)*Math.sin(rad(a)),t)});
+  s+=`<circle class="dot" cx="190" cy="112" r="4"/>`+T(198,126,'O','lbl','start');
+  return S(380,232,s);
+}
+function ringFig(R,r){
+  const s=`<path class="shape2" fill-rule="evenodd" d="M100 112a90 90 0 1 0 180 0a90 90 0 1 0 -180 0M145 112a45 45 0 1 0 90 0a45 45 0 1 0 -90 0"/>`
+    +`<circle class="thin" cx="190" cy="112" r="45"/>`+Ln([190,112],[190,22],'edge')+Ln([190,112],[235,112],'edge')+`<circle class="dot" cx="190" cy="112" r="4"/>`
+    +T(198,62,R,'lbl','start')+T(212,100,r,'lbl hl');
+  return S(380,224,s);
+}
+function sqCircFig(side){
+  const s=`<rect class="shape2" x="100" y="22" width="180" height="180"/><circle class="hole" cx="190" cy="112" r="90"/>`+T(190,216,side)+T(92,112,side,'lbl','end');
+  return S(380,232,s);
+}
+function semiFig(r){
+  const s=`<path class="shape" d="M90 170 A100 100 0 0 1 290 170 Z"/>`+Ln([190,170],[290,170],'edge')+`<circle class="dot" cx="190" cy="170" r="4"/>`+T(240,156,r,'lbl hl');
+  return S(380,200,s);
+}
+function boxFig(l,w,h,cap=''){
+  const s=P([[60,100],[230,100],[300,55],[130,55]],'shape2')+P([[230,100],[300,55],[300,150],[230,195]],'shape')+P([[60,100],[230,100],[230,195],[60,195]],'shape')
+    +T(145,214,l)+T(272,182,w,'lbl','start')+T(52,148,h,'lbl','end');
+  return S(380,226,s,cap||NOTE);
+}
+function blocksFig(lA,hA,lB,hB,w){
+  const s=P([[40,65],[160,65],[220,27],[100,27]],'shape2')+P([[160,65],[220,27],[220,157],[160,195]],'shape')+P([[40,65],[160,65],[160,195],[40,195]],'shape')
+    +P([[160,125],[280,125],[280,195],[160,195]],'shape')+P([[160,125],[280,125],[340,87],[220,87]],'shape2')+P([[280,125],[340,87],[340,157],[280,195]],'shape')
+    +T(100,214,lA)+T(220,214,lB)+T(32,130,hA,'lbl','end')+T(348,124,hB,'lbl','start')+T(318,186,w,'lbl','start');
+  return S(400,226,s,NOTE);
+}
+function pieFig(cats,ps,hide=-1){
+  const c=[112,114],r=94;let a0=-90,s='';
+  ps.forEach((p,i)=>{const a1=a0+p*3.6;const large=p>50?1:0;
+    const x0=c[0]+r*Math.cos(rad(a0)),y0=c[1]+r*Math.sin(rad(a0)),x1=c[0]+r*Math.cos(rad(a1)),y1=c[1]+r*Math.sin(rad(a1));
+    s+=`<path class="pslice p${i}" d="M${c[0]} ${c[1]} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z"/>`;
+    const m=rad((a0+a1)/2);s+=T(c[0]+r*.62*Math.cos(m),c[1]+r*.62*Math.sin(m),i===hide?'?':p+'%','plbl');a0=a1});
+  const y0=c[1]-(cats.length*30)/2+15;
+  cats.forEach((t,i)=>{s+=`<rect class="p${i}" x="228" y="${y0+i*30-8}" width="16" height="16" rx="4"/>`+T(252,y0+i*30,t,'lbl sm','start')});
+  return S(380,228,s);
+}
+function netFig(type){
+  let s='';const sq=(x,y,z=44)=>P([[x,y],[x+z,y],[x+z,y+z],[x,y+z]]);
+  if(type==='cube'){const x0=102,y0=46;[[1,0],[0,1],[1,1],[2,1],[3,1],[1,2]].forEach(([i,j])=>s+=sq(x0+i*44,y0+j*44))}
+  if(type==='triPrism'){[100,160,220].forEach(x=>s+=P([[x,70],[x+60,70],[x+60,160],[x,160]]));s+=P([[160,70],[220,70],[190,18]],'shape2')+P([[160,160],[220,160],[190,212]],'shape2')}
+  if(type==='sqPyr'){s+=P([[155,80],[225,80],[225,150],[155,150]],'shape2')+P([[155,80],[225,80],[190,20]])+P([[155,150],[225,150],[190,210]])+P([[155,80],[155,150],[95,115]])+P([[225,80],[225,150],[285,115]])}
+  if(type==='cyl'){s+=P([[110,72],[270,72],[270,152],[110,152]])+`<circle class="shape2" cx="190" cy="42" r="30"/><circle class="shape2" cx="190" cy="182" r="30"/>`}
+  if(type==='cone'){const p=a=>[190+130*Math.cos(rad(a)),18+130*Math.sin(rad(a))];const A=p(58),B=p(122);
+    s+=`<path class="shape" d="M190 18 L${A[0].toFixed(1)} ${A[1].toFixed(1)} A130 130 0 0 1 ${B[0].toFixed(1)} ${B[1].toFixed(1)} Z"/><circle class="shape2" cx="190" cy="178" r="30"/>`}
+  if(type==='triPyr'){const A=[190,18],B=[86,198],C=[294,198],ab=[138,108],bc=[190,198],ca=[242,108];s+=P([A,ab,ca])+P([ab,B,bc])+P([ca,bc,C])+P([ab,bc,ca],'shape2')}
+  if(type==='pentPrism'){[60,112,164,216,268].forEach(x=>s+=P([[x,80],[x+52,80],[x+52,150],[x,150]]));
+    const pp=(cx,cy,r,flip)=>{const o=[];for(let i=0;i<5;i++){const a=rad((flip?90:-90)+i*72);o.push([cx+r*Math.cos(a),cy+r*Math.sin(a)])}return o};
+    s+=P(pp(190,80-42,44,true).map(p=>[p[0],p[1]]),'shape2')}
+  return S(380,226,s);
+}
+
+/* ================= question banks ================= */
+// ---- บทที่ 6 ด่าน 1: ชนิดและมุมของรูปสามเหลี่ยม
+const L1=[
+()=>{const a=ri(30,85),b=ri(25,150-a),c=180-a-b;
+  return numQ(`รูปสามเหลี่ยมมีมุมสองมุมขนาด ${a}° และ ${b}° มุมที่เหลือมีขนาดกี่องศา`,c,'°',[c+10,c-10,180-a,a+b,c+20],
+  `มุมภายในทั้งสามของรูปสามเหลี่ยมรวมกันได้ 180°<br>180 − ${a} − ${b} = <b>${c}°</b>`,triFig(triFromAngles(a,b),[a+'°',b+'°','?']))},
+()=>{const t=ri(0,2);let A;
+  if(t===0){do{A=[ri(50,85),ri(50,85)];A.push(180-A[0]-A[1])}while(A[2]>=90||(A[0]===60&&A[1]===60))}
+  else if(t===1){const x=ri(25,65);A=[90,x,90-x]}
+  else{const x=ri(95,140),y=ri(15,180-x-15);A=[x,y,180-x-y]}
+  A=shuffle(A);
+  const N=['รูปสามเหลี่ยมมุมแหลม','รูปสามเหลี่ยมมุมฉาก','รูปสามเหลี่ยมมุมป้าน'];
+  const E=['มุมทั้งสามเป็นมุมแหลม (เล็กกว่า 90°)','มีมุมหนึ่งเป็นมุมฉาก (90°)','มีมุมหนึ่งเป็นมุมป้าน (ใหญ่กว่า 90°)'];
+  return txtQ(`รูปสามเหลี่ยมมีมุมขนาด ${A[0]}°, ${A[1]}° และ ${A[2]}° เมื่อจำแนกตามขนาดของมุม เป็นรูปสามเหลี่ยมชนิดใด`,N[t],[...N.filter((_,i)=>i!==t),'รูปสามเหลี่ยมด้านเท่า'],
+  `${E[t]} จึงเป็น<b>${N[t]}</b>`,triFig(triFromAngles(A[0],A[1]),A.map(x=>x+'°')))},
+()=>{const t=ri(0,2);let s;
+  if(t===0){const x=ri(4,15);s=[x,x,x]}
+  else if(t===1){let x,y;do{x=ri(5,15);y=ri(3,2*x-2)}while(y===x);s=shuffle([x,x,y])}
+  else{do{s=[ri(4,15),ri(4,15),ri(4,15)]}while(new Set(s).size<3||!isTri(s))}
+  const N=['รูปสามเหลี่ยมด้านเท่า','รูปสามเหลี่ยมหน้าจั่ว','รูปสามเหลี่ยมด้านไม่เท่า'];
+  const E=['ด้านทั้งสามยาวเท่ากัน','มีด้านยาวเท่ากันสองด้าน','ด้านทั้งสามยาวไม่เท่ากันเลย'];
+  const W=t===0?['รูปสามเหลี่ยมด้านไม่เท่า','รูปสามเหลี่ยมมุมฉาก','รูปสามเหลี่ยมมุมป้าน']:[...N.filter((_,i)=>i!==t),'สร้างเป็นรูปสามเหลี่ยมไม่ได้'];
+  return txtQ(`รูปสามเหลี่ยมมีด้านยาว ${s[0]} ซม., ${s[1]} ซม. และ ${s[2]} ซม. เมื่อจำแนกตามความยาวของด้าน เป็นรูปสามเหลี่ยมชนิดใด`,N[t],W,
+  `${E[t]} จึงเป็น<b>${N[t]}</b>`,triFig(triFromSides(s),[],s.map(x=>x+' ซม.')))},
+()=>{if(Math.random()<.5){const ap=ri(10,70)*2,b=(180-ap)/2;
+    return numQ(`รูปสามเหลี่ยมหน้าจั่วมีมุมยอดขนาด ${ap}° มุมที่ฐานแต่ละมุมมีขนาดกี่องศา`,b,'°',[180-ap,b+10,ap,b-10],
+    `มุมที่ฐานของรูปสามเหลี่ยมหน้าจั่วมีขนาดเท่ากัน<br>(180 − ${ap}) ÷ 2 = <b>${b}°</b>`,triFig(triFromAngles(b,b),['?','?',ap+'°']))}
+  const b=ri(25,80),ap=180-2*b;
+  return numQ(`รูปสามเหลี่ยมหน้าจั่วมีมุมที่ฐานมุมหนึ่งขนาด ${b}° มุมยอดมีขนาดกี่องศา`,ap,'°',[180-b,ap+10,b,ap-10,ap+20],
+  `มุมที่ฐานทั้งสองเท่ากัน คือ ${b}° และ ${b}°<br>180 − ${b} − ${b} = <b>${ap}°</b>`,triFig(triFromAngles(b,b),[b+'°','','?']))},
+()=>{const a=ri(15,75),o=90-a;
+  return numQ(`รูปสามเหลี่ยมมุมฉากรูปหนึ่งมีมุมแหลมมุมหนึ่งขนาด ${a}° มุมแหลมอีกมุมหนึ่งมีขนาดกี่องศา`,o,'°',[180-a,o+10,a,90+a,o-10],
+  `มุมภายในรวมกัน 180° และมีมุมฉาก 90°<br>180 − 90 − ${a} = <b>${o}°</b>`,triFig(triFromAngles(90,a),['90°',a+'°','?']))},
+()=>{let v;do{v=[ri(3,12),ri(3,12),ri(3,12)].sort((x,y)=>x-y)}while(!(v[2]<v[0]+v[1]));
+  const bad=[];while(bad.length<3){const x=ri(2,9),y=ri(2,9),z=x+y+ri(0,4);const k=[x,y,z].sort((a,b)=>a-b).join(', ');if(!bad.includes(k))bad.push(k)}
+  const f=k=>k+' ซม.';
+  return txtQ('ความยาวด้านชุดใดนำมาสร้างเป็นรูปสามเหลี่ยมได้',f(v.join(', ')),bad.map(f),
+  `ผลบวกของความยาวด้านสองด้านที่สั้นกว่าต้องมากกว่าด้านที่ยาวที่สุด<br>${v[0]} + ${v[1]} = ${v[0]+v[1]} ซึ่งมากกว่า ${v[2]} จึง<b>สร้างได้</b>`)},
+factGen([
+ {q:'มุมภายในทั้งสามมุมของรูปสามเหลี่ยมรวมกันได้กี่องศา',a:'180°',w:['90°','270°','360°'],e:'มุมภายในของรูปสามเหลี่ยมทุกรูปรวมกันได้ <b>180°</b>'},
+ {q:'รูปสามเหลี่ยมด้านเท่า มุมภายในแต่ละมุมมีขนาดกี่องศา',a:'60°',w:['45°','90°','30°'],e:'มุมทั้งสามเท่ากัน 180 ÷ 3 = <b>60°</b>'},
+ {q:'รูปสามเหลี่ยมมุมฉากมีมุมฉากกี่มุม',a:'1 มุม',w:['2 มุม','3 มุม','ไม่มีมุมฉาก'],e:'ถ้ามีมุมฉาก 2 มุม จะรวมกันได้ 180° แล้ว ไม่เหลือให้มุมที่สาม จึงมีได้ <b>1 มุม</b>'},
+ {q:'ส่วนสูงของรูปสามเหลี่ยมคือข้อใด',a:'ส่วนของเส้นตรงที่ลากจากจุดยอดมาตั้งฉากกับฐาน',w:['ด้านที่ยาวที่สุดของรูปสามเหลี่ยม','ส่วนของเส้นตรงที่ลากจากจุดยอดไปยังจุดกึ่งกลางของด้านใดก็ได้','ผลบวกของความยาวทุกด้าน'],e:'ส่วนสูงคือ<b>ส่วนของเส้นตรงที่ลากจากจุดยอดมาตั้งฉากกับฐาน</b>หรือส่วนต่อของฐาน'},
+ {q:'มุมที่ฐานทั้งสองมุมของรูปสามเหลี่ยมหน้าจั่วมีลักษณะอย่างไร',a:'มีขนาดเท่ากัน',w:['รวมกันได้ 90°','เป็นมุมฉากทั้งสองมุม','มุมหนึ่งใหญ่กว่าอีกมุมเสมอ'],e:'รูปสามเหลี่ยมหน้าจั่วมีมุมที่ฐาน<b>ขนาดเท่ากัน</b>'},
+ {q:'รูปสามเหลี่ยมหนึ่งรูปมีส่วนสูงได้กี่เส้น',a:'3 เส้น',w:['1 เส้น','2 เส้น','4 เส้น'],e:'ใช้ด้านใดเป็นฐานก็ได้ จึงลากส่วนสูงได้ <b>3 เส้น</b> ตามฐาน 3 ด้าน'},
+ {q:'รูปสามเหลี่ยมที่มีมุมหนึ่งใหญ่กว่า 90° เรียกว่ารูปสามเหลี่ยมชนิดใด',a:'รูปสามเหลี่ยมมุมป้าน',w:['รูปสามเหลี่ยมมุมแหลม','รูปสามเหลี่ยมมุมฉาก','รูปสามเหลี่ยมด้านเท่า'],e:'มุมที่ใหญ่กว่า 90° คือมุมป้าน จึงเป็น<b>รูปสามเหลี่ยมมุมป้าน</b>'},
+]),
+];
+
+// ---- บทที่ 6 ด่าน 2: ความยาวรอบรูปและพื้นที่
+const L2=[
+()=>{let s;do{s=[ri(5,25),ri(5,25),ri(5,25)]}while(!isTri(s));const P_=s[0]+s[1]+s[2];
+  return numQ(`รูปสามเหลี่ยมมีด้านยาว ${s[0]} ซม., ${s[1]} ซม. และ ${s[2]} ซม. มีความยาวรอบรูปกี่เซนติเมตร`,P_,'ซม.',[P_+10,P_-5,s[0]*s[1],P_+2],
+  `ความยาวรอบรูป = ผลบวกของความยาวทุกด้าน<br>${s[0]} + ${s[1]} + ${s[2]} = <b>${P_} ซม.</b>`,triFig(triFromSides(s),[],s.map(x=>x+' ซม.')))},
+()=>{const x=ri(4,30);
+  if(Math.random()<.5)return numQ(`รูปสามเหลี่ยมด้านเท่ายาวด้านละ ${x} ซม. มีความยาวรอบรูปกี่เซนติเมตร`,3*x,'ซม.',[2*x,4*x,x*x,3*x+3],
+    `รูปสามเหลี่ยมด้านเท่ามี 3 ด้านยาวเท่ากัน<br>${x} × 3 = <b>${3*x} ซม.</b>`,triFig(triFromSides([x,x,x]),[],[x+' ซม.','','']));
+  return numQ(`รูปสามเหลี่ยมด้านเท่ามีความยาวรอบรูป ${3*x} ซม. ยาวด้านละกี่เซนติเมตร`,x,'ซม.',[x+3,3*x/2,2*x,x-2],
+    `ด้านทั้งสามยาวเท่ากัน<br>${3*x} ÷ 3 = <b>${x} ซม.</b>`,triFig(triFromSides([x,x,x]),[],['?','','']))},
+()=>{const l=ri(6,25),b=ri(4,2*l-2),P_=b+2*l;
+  return numQ(`รูปสามเหลี่ยมหน้าจั่วมีความยาวรอบรูป ${P_} ซม. ฐานยาว ${b} ซม. ด้านประกอบมุมยอดแต่ละด้านยาวกี่เซนติเมตร`,l,'ซม.',[P_-b,P_/3,l+2,l-3],
+  `ด้านประกอบมุมยอดยาวเท่ากัน 2 ด้าน<br>(${P_} − ${b}) ÷ 2 = <b>${l} ซม.</b>`,triFig(triFromSides([b,l,l]),[],[b+' ซม.','?','?']))},
+()=>{let b,h;do{b=ri(4,20);h=ri(3,16)}while((b*h)%2);const A=b*h/2;
+  return numQ(`รูปสามเหลี่ยมมีฐานยาว ${b} ซม. สูง ${h} ซม. มีพื้นที่กี่ตารางเซนติเมตร`,A,'ตร.ซม.',[b*h,b+h,A+b,2*(b+h)],
+  `พื้นที่รูปสามเหลี่ยม = ½ × ฐาน × สูง<br>½ × ${b} × ${h} = <b>${fmt(A)} ตร.ซม.</b>`,triArea(b,h,b+' ซม.',h+' ซม.'))},
+()=>{let b,h;do{b=ri(3,18);h=ri(3,18)}while((b*h)%2||b===h);const A=b*h/2;
+  return numQ(`รูปสามเหลี่ยมมุมฉากมีด้านประกอบมุมฉากยาว ${b} ซม. และ ${h} ซม. มีพื้นที่กี่ตารางเซนติเมตร`,A,'ตร.ซม.',[b*h,b+h,A+h,A*3],
+  `ด้านประกอบมุมฉากด้านหนึ่งเป็นฐาน อีกด้านเป็นส่วนสูง<br>½ × ${b} × ${h} = <b>${fmt(A)} ตร.ซม.</b>`,rightTri(b,h))},
+()=>{const b=ri(2,10)*2,h=ri(3,18),A=b*h/2;
+  return numQ(`รูปสามเหลี่ยมมีพื้นที่ ${A} ตร.ซม. ฐานยาว ${b} ซม. มีส่วนสูงกี่เซนติเมตร`,h,'ซม.',[A/b,2*A,h*2,h+3],
+  `½ × ${b} × สูง = ${A}<br>สูง = ${A} × 2 ÷ ${b} = <b>${h} ซม.</b>`,triArea(b,h,b+' ซม.','?'))},
+()=>{let b,h;do{b=ri(4,20);h=ri(4,15)}while((b*h)%2);const A=b*h/2,p=pick([20,25,30,40,50,80,100]);
+  return numQ(`ที่ดินรูปสามเหลี่ยมมีฐานยาว ${b} เมตร สูง ${h} เมตร ต้องการปูหญ้าราคาตารางเมตรละ ${p} บาท ต้องจ่ายเงินกี่บาท`,A*p,'บาท',[b*h*p,(b+h)*p,A*p/2,A*p+p*b],
+  `พื้นที่ = ½ × ${b} × ${h} = ${fmt(A)} ตร.ม.<br>ค่าหญ้า = ${fmt(A)} × ${p} = <b>${fmt(A*p)} บาท</b>`,triArea(b,h,b+' ม.',h+' ม.'))},
+()=>{let s;do{s=[ri(6,30),ri(6,30),ri(6,30)]}while(!isTri(s));const P_=s[0]+s[1]+s[2],p=pick([5,8,10,12,15,20]),n=pick([1,2,3]);const T_=P_*n*p;
+  return numQ(`สวนรูปสามเหลี่ยมมีด้านยาว ${s[0]} ม., ${s[1]} ม. และ ${s[2]} ม. ต้องการล้อมลวดรอบสวน ${n} รอบ ลวดราคาเมตรละ ${p} บาท ต้องจ่ายเงินกี่บาท`,T_,'บาท',[P_*p*(n===1?2:1),P_*(n+1)*p,P_*n,T_+p*10],
+  `ความยาวรอบรูป = ${s[0]} + ${s[1]} + ${s[2]} = ${P_} ม.<br>ลวด ${n} รอบ = ${P_} × ${n} = ${P_*n} ม.<br>ค่าลวด = ${P_*n} × ${p} = <b>${fmt(T_)} บาท</b>`,triFig(triFromSides(s),[],s.map(x=>x+' ม.')))},
+];
+
+// ---- บทที่ 7 ด่าน 3: ลักษณะ มุมภายใน ความยาวรอบรูปของรูปหลายเหลี่ยม
+const PN={3:'สามเหลี่ยม',4:'สี่เหลี่ยม',5:'ห้าเหลี่ยม',6:'หกเหลี่ยม',7:'เจ็ดเหลี่ยม',8:'แปดเหลี่ยม',9:'เก้าเหลี่ยม',10:'สิบเหลี่ยม',12:'สิบสองเหลี่ยม'};
+const L3=[
+()=>{const n=ri(5,10);const w=[n-1,n+1,n+2,n-2,n-3].filter(x=>x>=4&&x<=10&&x!==n).slice(0,3);
+  return txtQ('รูปหลายเหลี่ยมในภาพเรียกว่ารูปอะไร','รูป'+PN[n],w.map(x=>'รูป'+PN[x]),
+  `นับจำนวนด้านได้ ${n} ด้าน และมี ${n} มุม จึงเรียกว่า<b>รูป${PN[n]}</b>`,polyFig(n))},
+()=>{const n=ri(4,10),s=(n-2)*180;
+  return numQ(`ผลบวกของขนาดของมุมภายในทั้งหมดของรูป${PN[n]}เท่ากับกี่องศา`,s,'°',[n*180,(n-1)*180,(n-3)*180,n*90],
+  `ลากเส้นทแยงมุมจากจุดยอดจุดเดียว แบ่งได้ ${n-2} รูปสามเหลี่ยม<br>${n-2} × 180° = <b>${fmt(s)}°</b>`,polyFig(n,{diag:true}))},
+()=>{const n=ri(5,10);
+  return numQ(`ลากเส้นทแยงมุมจากจุดยอดจุดเดียวของรูป${PN[n]} จะแบ่งรูปได้เป็นรูปสามเหลี่ยมกี่รูป`,n-2,'รูป',[n,n-1,n-3,n+1],
+  `จำนวนรูปสามเหลี่ยม = จำนวนด้าน − 2<br>${n} − 2 = <b>${n-2} รูป</b>`,polyFig(n))},
+()=>{let a,b,c,d;do{a=ri(55,150);b=ri(55,150);c=ri(55,150);d=360-a-b-c}while(d<40||d>170);
+  return numQ(`รูปสี่เหลี่ยมรูปหนึ่งมีมุมภายในขนาด ${a}°, ${b}° และ ${c}° มุมที่เหลือมีขนาดกี่องศา`,d,'°',[d+10,d-10,540-a-b-c,d+20],
+  `มุมภายในของรูปสี่เหลี่ยมรวมกันได้ 360°<br>360 − ${a} − ${b} − ${c} = <b>${d}°</b>`)},
+()=>{let A,e;do{A=[ri(95,130),ri(95,130),ri(95,130),ri(95,130)];e=540-A.reduce((x,y)=>x+y)}while(e<70||e>170);
+  return numQ(`รูปห้าเหลี่ยมรูปหนึ่งมีมุมภายในสี่มุมขนาด ${A.join('°, ')}° มุมที่ห้ามีขนาดกี่องศา`,e,'°',[e+10,360-(540-e-A[3])+0,e-10,720-A.reduce((x,y)=>x+y)],
+  `มุมภายในของรูปห้าเหลี่ยมรวมกัน (5 − 2) × 180 = 540°<br>540 − ${A.reduce((x,y)=>x+y)} = <b>${e}°</b>`)},
+()=>{const n=pick([5,6,8,9,10,12]),e=(n-2)*180/n;
+  return numQ(`รูป${PN[n]}ด้านเท่ามุมเท่า มุมภายในแต่ละมุมมีขนาดกี่องศา`,e,'°',[360/n,e+15,e-12,(n-2)*180],
+  `ผลบวกมุมภายใน = (${n} − 2) × 180 = ${fmt((n-2)*180)}°<br>แต่ละมุม = ${fmt((n-2)*180)} ÷ ${n} = <b>${e}°</b>`,polyFig(n))},
+()=>{const n=ri(5,10),s=ri(3,25);
+  if(Math.random()<.5)return numQ(`รูป${PN[n]}ด้านเท่ายาวด้านละ ${s} ซม. มีความยาวรอบรูปกี่เซนติเมตร`,n*s,'ซม.',[(n-1)*s,(n+1)*s,n+s,4*s],
+    `มีด้าน ${n} ด้านยาวเท่ากัน<br>${s} × ${n} = <b>${n*s} ซม.</b>`,polyFig(n,{side:s+' ซม.'}));
+  return numQ(`รูป${PN[n]}ด้านเท่ามีความยาวรอบรูป ${n*s} ซม. ยาวด้านละกี่เซนติเมตร`,s,'ซม.',[s+2,n*s/(n-1),n*s/(n+1),s*2],
+    `มีด้าน ${n} ด้านยาวเท่ากัน<br>${n*s} ÷ ${n} = <b>${s} ซม.</b>`,polyFig(n,{side:'?'}))},
+()=>{const n=pick([5,6]);const sd=Array.from({length:n},()=>ri(4,20));const P_=sd.reduce((a,b)=>a+b);
+  return numQ(`รูป${PN[n]}ในภาพมีความยาวรอบรูปกี่เซนติเมตร (หน่วยเป็นเซนติเมตร)`,P_,'ซม.',[P_-sd[0],P_+sd[1],P_+10,P_-7],
+  `บวกความยาวทุกด้าน<br>${sd.join(' + ')} = <b>${P_} ซม.</b>`,polyFig(n,{sides:sd.map(String)}))},
+];
+
+// ---- บทที่ 7 ด่าน 4: พื้นที่รูปหลายเหลี่ยม
+const L4=[
+()=>{let a,b,h;do{a=ri(4,15);b=ri(a+2,a+14);h=ri(3,14)}while(((a+b)*h)%2);const A=(a+b)*h/2;
+  return numQ(`รูปสี่เหลี่ยมคางหมูมีด้านคู่ขนานยาว ${a} ซม. และ ${b} ซม. สูง ${h} ซม. มีพื้นที่กี่ตารางเซนติเมตร`,A,'ตร.ซม.',[(a+b)*h,a*b*h/2,(b-a)*h/2,A+b],
+  `พื้นที่ = ½ × ผลบวกของด้านคู่ขนาน × สูง<br>½ × (${a} + ${b}) × ${h} = <b>${fmt(A)} ตร.ซม.</b>`,trapFig(a+' ซม.',b+' ซม.',h+' ซม.'))},
+()=>{let a,b,h;do{a=ri(4,15);b=ri(a+2,a+14);h=ri(3,14)}while(((a+b)*h)%2);const A=(a+b)*h/2;
+  return numQ(`รูปสี่เหลี่ยมคางหมูมีพื้นที่ ${fmt(A)} ตร.ซม. ด้านคู่ขนานยาว ${a} ซม. และ ${b} ซม. สูงกี่เซนติเมตร`,h,'ซม.',[2*h,A/(a+b),h+2,h+5],
+  `½ × (${a} + ${b}) × สูง = ${fmt(A)}<br>สูง = ${fmt(A)} × 2 ÷ ${a+b} = <b>${h} ซม.</b>`,trapFig(a+' ซม.',b+' ซม.','?'))},
+()=>{let d1,d2;do{d1=ri(6,24);d2=ri(4,20)}while((d1*d2)%2);const A=d1*d2/2;
+  return numQ(`รูปสี่เหลี่ยมรูปว่าวมีเส้นทแยงมุมยาว ${d1} ซม. และ ${d2} ซม. มีพื้นที่กี่ตารางเซนติเมตร`,A,'ตร.ซม.',[d1*d2,d1+d2,2*(d1+d2),A+d1],
+  `พื้นที่รูปว่าว = ½ × ผลคูณของความยาวเส้นทแยงมุม<br>½ × ${d1} × ${d2} = <b>${fmt(A)} ตร.ซม.</b>`,kiteFig(d1+' ซม.',d2+' ซม.'))},
+()=>{let d1,d2;do{d1=ri(6,24);d2=ri(4,20)}while((d1*d2)%2||d1===d2);const A=d1*d2/2;
+  return numQ(`รูปสี่เหลี่ยมขนมเปียกปูนมีเส้นทแยงมุมยาว ${d1} ซม. และ ${d2} ซม. ซึ่งตัดกันเป็นมุมฉาก มีพื้นที่กี่ตารางเซนติเมตร`,A,'ตร.ซม.',[d1*d2,d1+d2,A*4,A-d2],
+  `เส้นทแยงมุมตัดกันเป็นมุมฉาก ใช้ ½ × ผลคูณของเส้นทแยงมุม<br>½ × ${d1} × ${d2} = <b>${fmt(A)} ตร.ซม.</b>`,kiteFig(d1+' ซม.',d2+' ซม.',true))},
+()=>{let d,h1,h2;do{d=ri(6,20);h1=ri(3,10);h2=ri(3,10)}while((d*(h1+h2))%2);const A=d*(h1+h2)/2;
+  return numQ(`รูปสี่เหลี่ยม กขคง มีเส้นทแยงมุม กค ยาว ${d} ซม. ส่วนสูงจาก ข และ ง ถึง กค ยาว ${h1} ซม. และ ${h2} ซม. มีพื้นที่กี่ตารางเซนติเมตร`,A,'ตร.ซม.',[d*(h1+h2),d*h1/2,A+d,d*h1*h2/2],
+  `แบ่งเป็นรูปสามเหลี่ยม 2 รูปที่มีฐาน กค ร่วมกัน<br>½×${d}×${h1} + ½×${d}×${h2} = ${fmt(d*h1/2)} + ${fmt(d*h2/2)} = <b>${fmt(A)} ตร.ซม.</b>`,splitFig(d+' ซม.',h1+' ซม.',h2+' ซม.'))},
+()=>{let w,hr,ht;do{w=ri(6,16);hr=ri(4,12);ht=ri(3,9)}while((w*ht)%2);const A=w*hr+w*ht/2;
+  return numQ(`รูปบ้านในภาพประกอบด้วยรูปสี่เหลี่ยมผืนผ้ากว้าง ${w} ซม. สูง ${hr} ซม. และรูปสามเหลี่ยมสูง ${ht} ซม. มีพื้นที่ทั้งหมดกี่ตารางเซนติเมตร`,A,'ตร.ซม.',[w*hr+w*ht,w*(hr+ht),w*hr,A+w],
+  `สี่เหลี่ยมผืนผ้า ${w} × ${hr} = ${w*hr} ตร.ซม.<br>สามเหลี่ยม ½ × ${w} × ${ht} = ${fmt(w*ht/2)} ตร.ซม.<br>รวม <b>${fmt(A)} ตร.ซม.</b>`,houseFig(w+' ซม.',hr+' ซม.',ht+' ซม.'))},
+()=>{let a,b,h;do{a=ri(5,15);b=ri(a+3,a+15);h=ri(4,12)}while(((a+b)*h)%2);const A=(a+b)*h/2,p=pick([30,40,50,60,80,100]);
+  return numQ(`แปลงผักรูปสี่เหลี่ยมคางหมูมีด้านคู่ขนานยาว ${a} ม. และ ${b} ม. ระยะห่างระหว่างด้านคู่ขนาน ${h} ม. ใส่ปุ๋ยตารางเมตรละ ${p} บาท ต้องจ่ายค่าปุ๋ยกี่บาท`,A*p,'บาท',[(a+b)*h*p,A*p/2,(a+b)*p,A*p+p*h],
+  `พื้นที่ = ½ × (${a} + ${b}) × ${h} = ${fmt(A)} ตร.ม.<br>ค่าปุ๋ย = ${fmt(A)} × ${p} = <b>${fmt(A*p)} บาท</b>`,trapFig(a+' ม.',b+' ม.',h+' ม.'))},
+factGen([
+ {q:'สูตรการหาพื้นที่ของรูปสี่เหลี่ยมคางหมูคือข้อใด',a:'½ × ผลบวกของความยาวด้านคู่ขนาน × สูง',w:['ผลบวกของความยาวด้านคู่ขนาน × สูง','½ × ผลคูณของความยาวเส้นทแยงมุม','ฐาน × สูง'],e:'พื้นที่รูปสี่เหลี่ยมคางหมู = <b>½ × ผลบวกของความยาวด้านคู่ขนาน × สูง</b>'},
+ {q:'สูตรการหาพื้นที่ของรูปสี่เหลี่ยมรูปว่าวคือข้อใด',a:'½ × ผลคูณของความยาวเส้นทแยงมุม',w:['ผลคูณของความยาวเส้นทแยงมุม','½ × ผลบวกของความยาวเส้นทแยงมุม','ด้านยาว × ด้านสั้น'],e:'รูปว่าวมีเส้นทแยงมุมตัดกันเป็นมุมฉาก พื้นที่ = <b>½ × ผลคูณของความยาวเส้นทแยงมุม</b>'},
+ {q:'ถ้าลากเส้นทแยงมุม 1 เส้นในรูปสี่เหลี่ยมใด ๆ จะแบ่งรูปได้เป็นรูปสามเหลี่ยมกี่รูป',a:'2 รูป',w:['1 รูป','3 รูป','4 รูป'],e:'เส้นทแยงมุม 1 เส้นแบ่งรูปสี่เหลี่ยมเป็น<b>รูปสามเหลี่ยม 2 รูป</b> แล้วนำพื้นที่มารวมกัน'},
+]),
+];
+
+// ---- บทที่ 8 ด่าน 5: ส่วนต่าง ๆ ของวงกลม และเส้นรอบวง
+const CP=['รัศมี','เส้นผ่านศูนย์กลาง','คอร์ด','เส้นรอบวง','จุดศูนย์กลาง'];
+const L5=[
+()=>{if(Math.random()<.5){const r=ri(3,40);
+    return numQ(`วงกลมมีรัศมียาว ${r} ซม. เส้นผ่านศูนย์กลางยาวกี่เซนติเมตร`,2*r,'ซม.',[r/2,r,4*r,2*r+2],
+    `เส้นผ่านศูนย์กลางยาวเป็น 2 เท่าของรัศมี<br>${r} × 2 = <b>${2*r} ซม.</b>`,circFig('r',r+' ซม.'))}
+  const d=ri(3,40)*2;
+  return numQ(`วงกลมมีเส้นผ่านศูนย์กลางยาว ${d} ซม. รัศมียาวกี่เซนติเมตร`,d/2,'ซม.',[d,2*d,d/4,d/2+2],
+  `รัศมียาวเป็นครึ่งหนึ่งของเส้นผ่านศูนย์กลาง<br>${d} ÷ 2 = <b>${d/2} ซม.</b>`,circFig('d',d+' ซม.'))},
+()=>{const t=pick([['OA','รัศมี','OA ลากจากจุดศูนย์กลาง O ไปยังจุดบนวงกลม'],['BC','เส้นผ่านศูนย์กลาง','BC ผ่านจุดศูนย์กลาง O และปลายทั้งสองอยู่บนวงกลม'],['DE','คอร์ด','DE มีปลายทั้งสองอยู่บนวงกลม แต่ไม่ผ่านจุดศูนย์กลาง']]);
+  return txtQ(`จากรูป ส่วนของเส้นตรง ${t[0]} เรียกว่าอะไร`,t[1],shuffle(CP.filter(x=>x!==t[1])),`${t[2]} จึงเรียกว่า<b>${t[1]}</b>`,partsFig())},
+factGen([
+ {q:'ส่วนของเส้นตรงที่ลากจากจุดศูนย์กลางไปยังจุดใด ๆ บนวงกลม เรียกว่าอะไร',a:'รัศมี',w:['เส้นผ่านศูนย์กลาง','คอร์ด','เส้นรอบวง'],e:'เรียกว่า<b>รัศมี</b>'},
+ {q:'คอร์ดที่ยาวที่สุดของวงกลมคือข้อใด',a:'เส้นผ่านศูนย์กลาง',w:['รัศมี','เส้นรอบวง','เส้นสัมผัส'],e:'คอร์ดที่ผ่านจุดศูนย์กลางยาวที่สุด คือ<b>เส้นผ่านศูนย์กลาง</b>'},
+ {q:'ความยาวรอบวงกลมเรียกว่าอะไร',a:'เส้นรอบวง',w:['เส้นผ่านศูนย์กลาง','รัศมี','พื้นที่วงกลม'],e:'ความยาวรอบวงกลมเรียกว่า<b>เส้นรอบวง</b>'},
+ {q:'อัตราส่วนของความยาวเส้นรอบวงต่อความยาวเส้นผ่านศูนย์กลางมีค่าประมาณเท่าใด',a:'22/7 หรือประมาณ 3.14',w:['7/22 หรือประมาณ 0.32','2','4'],e:'เส้นรอบวง ÷ เส้นผ่านศูนย์กลาง = π ≈ <b>22/7 หรือ 3.14</b> เสมอ ไม่ว่าวงกลมจะใหญ่หรือเล็ก'},
+ {q:'เส้นผ่านศูนย์กลางยาวเป็นกี่เท่าของรัศมี',a:'2 เท่า',w:['ครึ่งเท่า','3 เท่า','22/7 เท่า'],e:'เส้นผ่านศูนย์กลาง = รัศมี + รัศมี = <b>2 เท่า</b>ของรัศมี'},
+]),
+()=>{const k=ri(1,6),r=7*k;
+  return numQ(`วงกลมมีรัศมียาว ${r} ซม. เส้นรอบวงยาวกี่เซนติเมตร`+PI,44*k,'ซม.',[22*k,88*k,154*k*k,44*k+7],
+  `เส้นรอบวง = 2 × π × รัศมี<br>2 × 22/7 × ${r} = <b>${44*k} ซม.</b>`,circFig('r',r+' ซม.'))},
+()=>{const k=ri(1,6),d=14*k;
+  return numQ(`วงกลมมีเส้นผ่านศูนย์กลางยาว ${d} ซม. เส้นรอบวงยาวกี่เซนติเมตร`+PI,44*k,'ซม.',[88*k,22*k,44*k+14,d*3],
+  `เส้นรอบวง = π × เส้นผ่านศูนย์กลาง<br>22/7 × ${d} = <b>${44*k} ซม.</b>`,circFig('d',d+' ซม.'))},
+()=>{const k=ri(1,6);
+  return numQ(`วงกลมมีเส้นรอบวงยาว ${44*k} ซม. รัศมียาวกี่เซนติเมตร`+PI,7*k,'ซม.',[14*k,22*k,3.5*k,7*k+7],
+  `2 × 22/7 × รัศมี = ${44*k}<br>รัศมี = ${44*k} × 7 ÷ 44 = <b>${7*k} ซม.</b>`,circFig('r','?'))},
+()=>{const r=pick([7,14,21,35]),C=44*r/7,n=pick([10,20,25,50,100]);const ans=C*n/100;
+  return numQ(`ล้อจักรยานมีรัศมี ${r} ซม. ถ้าล้อหมุนไป ${n} รอบ จักรยานจะเคลื่อนที่ได้ระยะทางกี่เมตร`+PI,ans,'ม.',[ans/2,ans*2,2*r*n/100,C*n/10],
+  `ล้อหมุน 1 รอบ = เส้นรอบวง = 2 × 22/7 × ${r} = ${C} ซม.<br>${n} รอบ = ${C} × ${n} = ${fmt(C*n)} ซม. = <b>${fmt(ans)} ม.</b>`,circFig('r',r+' ซม.'))},
+()=>{const r=pick([35,70,105]),C=44*r/7,n=ri(2,5);
+  return numQ(`ลู่วิ่งรูปวงกลมมีรัศมี ${r} เมตร นักกีฬาวิ่งรอบลู่ ${n} รอบ ได้ระยะทางกี่เมตร`+PI,C*n,'ม.',[C,C*n/2,r*2*n,C*(n+1)],
+  `1 รอบ = 2 × 22/7 × ${r} = ${C} ม.<br>${n} รอบ = ${C} × ${n} = <b>${fmt(C*n)} ม.</b>`,circFig('r',r+' ม.'))},
+];
+
+// ---- บทที่ 8 ด่าน 6: พื้นที่วงกลม
+const L6=[
+()=>{const k=ri(1,5),r=7*k,A=154*k*k;
+  return numQ(`วงกลมมีรัศมียาว ${r} ซม. มีพื้นที่กี่ตารางเซนติเมตร`+PI,A,'ตร.ซม.',[44*k,A*2,22*k*k,A*4],
+  `พื้นที่วงกลม = π × รัศมี × รัศมี<br>22/7 × ${r} × ${r} = <b>${fmt(A)} ตร.ซม.</b>`,circFig('r',r+' ซม.'))},
+()=>{const k=ri(1,4),d=14*k,A=154*k*k;
+  return numQ(`วงกลมมีเส้นผ่านศูนย์กลางยาว ${d} ซม. มีพื้นที่กี่ตารางเซนติเมตร`+PI,A,'ตร.ซม.',[616*k*k,44*k,A/2,A+44],
+  `รัศมี = ${d} ÷ 2 = ${7*k} ซม.<br>22/7 × ${7*k} × ${7*k} = <b>${fmt(A)} ตร.ซม.</b>`,circFig('d',d+' ซม.'))},
+()=>{const k=ri(1,5);
+  return numQ(`วงกลมมีพื้นที่ ${fmt(154*k*k)} ตร.ซม. รัศมียาวกี่เซนติเมตร`+PI,7*k,'ซม.',[14*k,49*k*k,22*k,7*k+7],
+  `22/7 × รัศมี × รัศมี = ${fmt(154*k*k)}<br>รัศมี × รัศมี = ${fmt(49*k*k)} → รัศมี = <b>${7*k} ซม.</b>`,circFig('r','?'))},
+()=>{const k=ri(1,3),r=7*k,A=77*k*k;
+  return numQ(`รูปครึ่งวงกลมมีรัศมี ${r} ซม. มีพื้นที่กี่ตารางเซนติเมตร`+PI,A,'ตร.ซม.',[154*k*k,22*k,A+r,36*k*k],
+  `พื้นที่วงกลมเต็มวง = 22/7 × ${r} × ${r} = ${fmt(154*k*k)} ตร.ซม.<br>ครึ่งวงกลม = ${fmt(154*k*k)} ÷ 2 = <b>${fmt(A)} ตร.ซม.</b>`,semiFig(r+' ซม.'))},
+()=>{const a=ri(2,4),b=ri(1,a-1),R=7*a,r=7*b,A=154*(a*a-b*b);
+  return numQ(`วงกลมสองวงมีจุดศูนย์กลางร่วมกัน วงใหญ่รัศมี ${R} ซม. วงเล็กรัศมี ${r} ซม. พื้นที่ส่วนที่แรเงามีกี่ตารางเซนติเมตร`+PI,A,'ตร.ซม.',[154*a*a,154*(a-b)*(a-b),154*(a*a+b*b),44*(a-b)],
+  `วงใหญ่ 22/7 × ${R} × ${R} = ${fmt(154*a*a)}<br>วงเล็ก 22/7 × ${r} × ${r} = ${fmt(154*b*b)}<br>ส่วนแรเงา = ${fmt(154*a*a)} − ${fmt(154*b*b)} = <b>${fmt(A)} ตร.ซม.</b>`,ringFig(R+' ซม.',r+' ซม.'))},
+()=>{const k=ri(1,3),s=14*k,A=42*k*k;
+  return numQ(`รูปสี่เหลี่ยมจัตุรัสยาวด้านละ ${s} ซม. มีวงกลมที่ใหญ่ที่สุดอยู่ข้างใน พื้นที่ส่วนที่แรเงามีกี่ตารางเซนติเมตร`+PI,A,'ตร.ซม.',[196*k*k,154*k*k,350*k*k,56*k*k],
+  `สี่เหลี่ยม ${s} × ${s} = ${fmt(196*k*k)} ตร.ซม.<br>วงกลมรัศมี ${7*k}: 22/7 × ${7*k} × ${7*k} = ${fmt(154*k*k)} ตร.ซม.<br>ส่วนแรเงา = <b>${fmt(A)} ตร.ซม.</b>`,sqCircFig(s+' ซม.'))},
+()=>{const k=ri(1,4);
+  return numQ(`วงกลมมีเส้นรอบวงยาว ${44*k} ซม. มีพื้นที่กี่ตารางเซนติเมตร`+PI,154*k*k,'ตร.ซม.',[44*k*k,616*k*k,7*k*44,154*k],
+  `หารัศมีก่อน: ${44*k} ÷ (2 × 22/7) = ${7*k} ซม.<br>พื้นที่ = 22/7 × ${7*k} × ${7*k} = <b>${fmt(154*k*k)} ตร.ซม.</b>`,circFig('r','?'))},
+()=>{const k=ri(1,3),r=7*k,p=pick([50,100,150,200]),A=154*k*k;
+  return numQ(`สระน้ำรูปวงกลมมีรัศมี ${r} เมตร ต้องการปูกระเบื้องที่พื้นสระ ราคาตารางเมตรละ ${p} บาท ต้องจ่ายเงินกี่บาท`+PI,A*p,'บาท',[44*k*p,A*p*2,A*p/2,A*p+p*10],
+  `พื้นที่ = 22/7 × ${r} × ${r} = ${fmt(A)} ตร.ม.<br>ค่ากระเบื้อง = ${fmt(A)} × ${p} = <b>${fmt(A*p)} บาท</b>`,circFig('r',r+' ม.'))},
+];
+
+// ---- บทที่ 9 ด่าน 7: ลักษณะและรูปคลี่ของรูปเรขาคณิตสามมิติ
+const PRB={3:'สามเหลี่ยม',4:'สี่เหลี่ยม',5:'ห้าเหลี่ยม',6:'หกเหลี่ยม',8:'แปดเหลี่ยม'};
+const UN={หน้า:'หน้า',ขอบ:'เส้น',จุดยอด:'จุด'};
+const NETS={cube:'ลูกบาศก์',triPrism:'ปริซึมสามเหลี่ยม',sqPyr:'พีระมิดฐานสี่เหลี่ยมจัตุรัส',cyl:'ทรงกระบอก',cone:'กรวย',triPyr:'พีระมิดฐานสามเหลี่ยม'};
+const NETE={cube:'รูปสี่เหลี่ยมจัตุรัส 6 รูปพับได้เป็น',triPrism:'รูปสามเหลี่ยม 2 รูปเป็นฐาน และรูปสี่เหลี่ยมผืนผ้า 3 รูปเป็นหน้าข้าง พับได้เป็น',sqPyr:'ฐานเป็นรูปสี่เหลี่ยมจัตุรัส หน้าข้างเป็นรูปสามเหลี่ยม 4 รูป พับได้เป็น',cyl:'วงกลม 2 วงเป็นฐาน และรูปสี่เหลี่ยมผืนผ้าม้วนเป็นผิวข้าง พับได้เป็น',cone:'วงกลม 1 วงเป็นฐาน และส่วนของวงกลมม้วนเป็นผิวข้าง พับได้เป็น',triPyr:'รูปสามเหลี่ยม 4 รูป (ฐาน 1 หน้าข้าง 3) พับได้เป็น'};
+const L7=[
+()=>{const n=pick([3,4,5,6,8]),what=pick(['หน้า','ขอบ','จุดยอด']);const v={หน้า:n+2,ขอบ:3*n,จุดยอด:2*n}[what];
+  return numQ(`ปริซึม${PRB[n]}มี${what}ทั้งหมดกี่${UN[what]}`,v,UN[what],[n+2,3*n,2*n,n+1,2*n+2,n],
+  `ปริซึม${PRB[n]}มีฐาน 2 ฐานเป็นรูป${PRB[n]} และหน้าข้าง ${n} หน้า<br>หน้า ${n}+2 = ${n+2} · ขอบ ${n}×3 = ${3*n} · จุดยอด ${n}×2 = ${2*n}<br>ดังนั้นมี${what} <b>${v} ${UN[what]}</b>`)},
+()=>{const n=pick([3,4,5,6,8]),what=pick(['หน้า','ขอบ','จุดยอด']);const v={หน้า:n+1,ขอบ:2*n,จุดยอด:n+1}[what];
+  return numQ(`พีระมิดฐาน${PRB[n]}มี${what}ทั้งหมดกี่${UN[what]}`,v,UN[what],[n+2,2*n,3*n,n,2*n+1,n+1],
+  `พีระมิดฐาน${PRB[n]}มีฐาน 1 ฐาน และหน้าข้างเป็นรูปสามเหลี่ยม ${n} หน้า มาบรรจบที่ยอด<br>หน้า ${n}+1 = ${n+1} · ขอบ ${n}×2 = ${2*n} · จุดยอด ${n}+1 = ${n+1}<br>ดังนั้นมี${what} <b>${v} ${UN[what]}</b>`)},
+()=>{const k=pick(Object.keys(NETS));const others=shuffle(Object.keys(NETS).filter(x=>x!==k)).slice(0,3);
+  return txtQ('รูปคลี่ในภาพประกอบเป็นรูปเรขาคณิตสามมิติใด',NETS[k],others.map(x=>NETS[x]),`${NETE[k]}<b>${NETS[k]}</b>`,netFig(k))},
+factGen([
+ {q:'รูปเรขาคณิตสามมิติใดไม่มีขอบและไม่มีจุดยอด',a:'ทรงกลม',w:['ทรงกระบอก','กรวย','ลูกบาศก์'],e:'<b>ทรงกลม</b>มีผิวโค้งเรียบทั้งหมด ไม่มีขอบและจุดยอด'},
+ {q:'รูปเรขาคณิตสามมิติที่มีฐานเป็นรูปวงกลม 2 ฐานที่เท่ากันและขนานกันคือข้อใด',a:'ทรงกระบอก',w:['กรวย','ทรงกลม','ปริซึมสี่เหลี่ยม'],e:'<b>ทรงกระบอก</b>มีฐานเป็นวงกลมสองฐานเท่ากันและขนานกัน'},
+ {q:'รูปเรขาคณิตสามมิติที่มีฐานเป็นรูปวงกลม 1 ฐาน และมีจุดยอด 1 จุดคือข้อใด',a:'กรวย',w:['ทรงกระบอก','ทรงกลม','พีระมิดฐานสามเหลี่ยม'],e:'<b>กรวย</b>มีฐานเป็นวงกลม และผิวข้างโค้งไปบรรจบที่จุดยอด'},
+ {q:'หน้าข้างของพีระมิดทุกชนิดเป็นรูปอะไร',a:'รูปสามเหลี่ยม',w:['รูปสี่เหลี่ยมผืนผ้า','รูปวงกลม','รูปห้าเหลี่ยม'],e:'หน้าข้างของพีระมิดเป็น<b>รูปสามเหลี่ยม</b>ที่มีจุดยอดร่วมกัน'},
+ {q:'หน้าข้างของปริซึมตรงเป็นรูปอะไร',a:'รูปสี่เหลี่ยมผืนผ้า',w:['รูปสามเหลี่ยม','รูปวงกลม','รูปสี่เหลี่ยมคางหมู'],e:'ปริซึมตรงมีหน้าข้างเป็น<b>รูปสี่เหลี่ยมผืนผ้า</b>'},
+ {q:'ชื่อของปริซึมและพีระมิดเรียกตามสิ่งใด',a:'รูปร่างของฐาน',w:['จำนวนจุดยอด','ความสูงของรูป','จำนวนขอบ'],e:'เรียกชื่อตาม<b>รูปร่างของฐาน</b> เช่น ฐานเป็นรูปห้าเหลี่ยม เรียกว่าปริซึมห้าเหลี่ยม'},
+ {q:'ลูกบาศก์มีหน้าทั้งหมดกี่หน้า',a:'6 หน้า',w:['4 หน้า','8 หน้า','12 หน้า'],e:'ลูกบาศก์มีหน้าเป็นรูปสี่เหลี่ยมจัตุรัส <b>6 หน้า</b> ขอบ 12 เส้น จุดยอด 8 จุด'},
+]),
+];
+
+// ---- บทที่ 9 ด่าน 8: ปริมาตรและความจุ
+const L8=[
+()=>{const l=ri(3,15),w=ri(2,12),h=ri(2,12),V=l*w*h;
+  return numQ(`กล่องทรงสี่เหลี่ยมมุมฉากยาว ${l} ซม. กว้าง ${w} ซม. สูง ${h} ซม. มีปริมาตรกี่ลูกบาศก์เซนติเมตร`,V,'ลบ.ซม.',[l+w+h,l*w,2*(l*w+w*h+l*h),V+l*w],
+  `ปริมาตร = กว้าง × ยาว × สูง<br>${w} × ${l} × ${h} = <b>${fmt(V)} ลบ.ซม.</b>`,boxFig(l+' ซม.',w+' ซม.',h+' ซม.'))},
+()=>{const e=ri(3,12);
+  return numQ(`ลูกบาศก์ยาวด้านละ ${e} ซม. มีปริมาตรกี่ลูกบาศก์เซนติเมตร`,e**3,'ลบ.ซม.',[e*e,3*e,6*e*e,e*e*(e+1)],
+  `ลูกบาศก์ทุกด้านยาวเท่ากัน<br>${e} × ${e} × ${e} = <b>${fmt(e**3)} ลบ.ซม.</b>`,boxFig(e+' ซม.',e+' ซม.',e+' ซม.',''))},
+()=>{const l=pick([20,25,30,40,50,60,80,100]),w=pick([10,20,25,30,40,50]),h=pick([10,20,30,40,50]);const L=l*w*h/1000;
+  return numQ(`ตู้ปลาทรงสี่เหลี่ยมมุมฉาก วัดด้านในยาว ${l} ซม. กว้าง ${w} ซม. สูง ${h} ซม. มีความจุกี่ลิตร`,L,'ลิตร',[L*10,L/10,l*w*h/100,L*2],
+  `ความจุ = ${w} × ${l} × ${h} = ${fmt(l*w*h)} ลบ.ซม.<br>1,000 ลบ.ซม. = 1 ลิตร → ${fmt(l*w*h)} ÷ 1,000 = <b>${fmt(L)} ลิตร</b>`,boxFig(l+' ซม.',w+' ซม.',h+' ซม.'))},
+()=>{const l=pick([30,40,50,60,80]),w=pick([20,25,30,40,50]),H=pick([40,50,60]),d=pick([10,20,25,30].filter(x=>x<H));const L=l*w*d/1000;
+  return numQ(`ถังน้ำทรงสี่เหลี่ยมมุมฉาก ด้านในยาว ${l} ซม. กว้าง ${w} ซม. สูง ${H} ซม. มีน้ำสูง ${d} ซม. มีน้ำอยู่กี่ลิตร`,L,'ลิตร',[l*w*H/1000,L*10,l*w*(H-d)/1000,L+5],
+  `ใช้ความสูงของน้ำ ไม่ใช่ความสูงของถัง<br>${w} × ${l} × ${d} = ${fmt(l*w*d)} ลบ.ซม. = <b>${fmt(L)} ลิตร</b>`,boxFig(l+' ซม.',w+' ซม.',H+' ซม.'))},
+()=>{const l=ri(4,15),w=ri(3,10),h=ri(2,12),V=l*w*h;
+  return numQ(`กล่องทรงสี่เหลี่ยมมุมฉากมีปริมาตร ${fmt(V)} ลบ.ซม. ฐานยาว ${l} ซม. กว้าง ${w} ซม. กล่องสูงกี่เซนติเมตร`,h,'ซม.',[V/l,h+2,h*2,V/(l+w)],
+  `ปริมาตร = พื้นที่ฐาน × สูง<br>พื้นที่ฐาน ${w} × ${l} = ${w*l} ตร.ซม.<br>สูง = ${fmt(V)} ÷ ${w*l} = <b>${h} ซม.</b>`,boxFig(l+' ซม.',w+' ซม.','?'))},
+()=>{const w=ri(3,8),lA=ri(3,8),hA=ri(6,12),lB=ri(3,8),hB=ri(2,hA-2);const V=lA*w*hA+lB*w*hB;
+  return numQ(`รูปเรขาคณิตสามมิติในภาพแบ่งเป็นทรงสี่เหลี่ยมมุมฉาก 2 ชิ้น หนาเท่ากัน ${w} ซม. ชิ้นซ้ายยาว ${lA} ซม. สูง ${hA} ซม. ชิ้นขวายาว ${lB} ซม. สูง ${hB} ซม. มีปริมาตรรวมกี่ลูกบาศก์เซนติเมตร`,V,'ลบ.ซม.',[(lA+lB)*w*hA,lA*w*hA,(lA+lB)*w*(hA+hB),V+w*10],
+  `ชิ้นซ้าย ${w} × ${lA} × ${hA} = ${lA*w*hA} ลบ.ซม.<br>ชิ้นขวา ${w} × ${lB} × ${hB} = ${lB*w*hB} ลบ.ซม.<br>รวม <b>${fmt(V)} ลบ.ซม.</b>`,blocksFig(lA+' ซม.',hA+' ซม.',lB+' ซม.',hB+' ซม.',w+' ซม.'))},
+()=>{const l=pick([40,50,60,80,100]),w=pick([30,40,50]),h=pick([30,40,50]);const T_=l*w*h/1000;const x=Math.round(T_*pick([.25,.4,.5,.6])/5)*5||5;
+  return numQ(`อ่างน้ำทรงสี่เหลี่ยมมุมฉาก ด้านในยาว ${l} ซม. กว้าง ${w} ซม. ลึก ${h} ซม. ขณะนี้มีน้ำ ${x} ลิตร ต้องเติมน้ำอีกกี่ลิตรจึงจะเต็มอ่าง`,T_-x,'ลิตร',[T_,T_+x,(T_-x)*10,T_/2],
+  `ความจุ = ${w} × ${l} × ${h} = ${fmt(l*w*h)} ลบ.ซม. = ${fmt(T_)} ลิตร<br>ต้องเติมอีก ${fmt(T_)} − ${x} = <b>${fmt(T_-x)} ลิตร</b>`,boxFig(l+' ซม.',w+' ซม.',h+' ซม.'))},
+factGen([
+ {q:'1 ลิตร เท่ากับกี่ลูกบาศก์เซนติเมตร',a:'1,000 ลบ.ซม.',w:['100 ลบ.ซม.','10 ลบ.ซม.','10,000 ลบ.ซม.'],e:'1 ลิตร = <b>1,000 ลบ.ซม.</b>'},
+ {q:'1 ลูกบาศก์เมตร เท่ากับกี่ลิตร',a:'1,000 ลิตร',w:['100 ลิตร','10,000 ลิตร','1,000,000 ลิตร'],e:'1 ลบ.ม. = 100 × 100 × 100 = 1,000,000 ลบ.ซม. = <b>1,000 ลิตร</b>'},
+ {q:'น้ำ 7,500 ลบ.ซม. เท่ากับกี่ลิตร',a:'7.5 ลิตร',w:['75 ลิตร','750 ลิตร','0.75 ลิตร'],e:'7,500 ÷ 1,000 = <b>7.5 ลิตร</b>'},
+ {q:'สูตรการหาปริมาตรของทรงสี่เหลี่ยมมุมฉากคือข้อใด',a:'กว้าง × ยาว × สูง',w:['กว้าง + ยาว + สูง','2 × (กว้าง + ยาว) × สูง','½ × กว้าง × ยาว × สูง'],e:'ปริมาตร = <b>กว้าง × ยาว × สูง</b> หรือ พื้นที่ฐาน × สูง'},
+]),
+];
+
+// ---- บทที่ 10 ด่าน 9: แผนภูมิรูปวงกลม
+const PIE_SETS=[
+ {t:'กีฬาที่นักเรียนชอบ',u:'คน',all:'นักเรียน',cats:['ฟุตบอล','บาสเกตบอล','วอลเลย์บอล','แบดมินตัน','ว่ายน้ำ'],N:[40,80,120,200,240,400]},
+ {t:'ผลไม้ที่นักเรียนชอบ',u:'คน',all:'นักเรียน',cats:['มะม่วง','ทุเรียน','มังคุด','เงาะ','ส้ม'],N:[60,80,120,160,200,300]},
+ {t:'วิธีเดินทางมาโรงเรียน',u:'คน',all:'นักเรียน',cats:['เดิน','จักรยาน','รถโรงเรียน','รถจักรยานยนต์','รถยนต์'],N:[80,120,200,400,600,800]},
+ {t:'รายจ่ายของครอบครัวในหนึ่งเดือน',u:'บาท',all:'รายจ่าย',cats:['ค่าอาหาร','ค่าเดินทาง','ค่าเล่าเรียน','ค่าน้ำค่าไฟ','เงินออม'],N:[12000,20000,24000,30000,40000]},
+];
+function pieData(){const S_=pick(PIE_SETS),k=pick([4,5]);let ps;
+  do{const u=Array(k).fill(2);for(let i=0;i<20-2*k;i++)u[ri(0,k-1)]++;ps=u.map(x=>x*5)}while(ps.filter(p=>p===Math.max(...ps)).length>1);
+  return {S:S_,k,ps,cats:shuffle(S_.cats).slice(0,k),N:pick(S_.N)}}
+const head=(D)=>`แผนภูมิแสดง${D.S.t} (${D.S.all}ทั้งหมด ${fmt(D.N)} ${D.S.u})`;
+const L9=[
+()=>{const D=pieData(),i=ri(0,D.k-1),v=D.ps[i]*D.N/100;
+  return numQ(`${head(D)} “${D.cats[i]}” คิดเป็นกี่${D.S.u}`,v,D.S.u,[D.ps[i],v*2,D.N-v,v+D.N/20],
+  `${D.cats[i]} คิดเป็น ${D.ps[i]}% ของทั้งหมด<br>${D.ps[i]}/100 × ${fmt(D.N)} = <b>${fmt(v)} ${D.S.u}</b>`,pieFig(D.cats,D.ps))},
+()=>{const D=pieData(),m=D.ps.indexOf(Math.max(...D.ps));
+  return txtQ(`จากแผนภูมิแสดง${D.S.t} ข้อใดมีจำนวนมากที่สุด`,D.cats[m],shuffle(D.cats.filter((_,i)=>i!==m)),
+  `ส่วนที่มีร้อยละมากที่สุด (${D.ps[m]}%) คือ<b>${D.cats[m]}</b>`,pieFig(D.cats,D.ps))},
+()=>{const D=pieData();let i,j;do{i=ri(0,D.k-1);j=ri(0,D.k-1)}while(D.ps[i]<=D.ps[j]);const v=(D.ps[i]-D.ps[j])*D.N/100;
+  return numQ(`${head(D)} “${D.cats[i]}” มากกว่า “${D.cats[j]}” กี่${D.S.u}`,v,D.S.u,[D.ps[i]-D.ps[j],D.ps[i]*D.N/100,(D.ps[i]+D.ps[j])*D.N/100,v*2],
+  `ต่างกัน ${D.ps[i]}% − ${D.ps[j]}% = ${D.ps[i]-D.ps[j]}%<br>${D.ps[i]-D.ps[j]}/100 × ${fmt(D.N)} = <b>${fmt(v)} ${D.S.u}</b>`,pieFig(D.cats,D.ps))},
+()=>{const D=pieData(),h=ri(0,D.k-1),v=D.ps[h];const others=D.ps.filter((_,i)=>i!==h);
+  return numQ(`จากแผนภูมิแสดง${D.S.t} ส่วนที่เป็น “${D.cats[h]}” คิดเป็นร้อยละเท่าใด`,v,'%',[v+5,v+10,v-5,100-v],
+  `ทั้งวงกลมคิดเป็น 100%<br>100 − (${others.join(' + ')}) = <b>${v}%</b>`,pieFig(D.cats,D.ps,h))},
+()=>{const D=pieData();let i,j;do{i=ri(0,D.k-1);j=ri(0,D.k-1)}while(i===j);const v=(D.ps[i]+D.ps[j])*D.N/100;
+  return numQ(`${head(D)} “${D.cats[i]}” และ “${D.cats[j]}” รวมกันคิดเป็นกี่${D.S.u}`,v,D.S.u,[D.ps[i]+D.ps[j],D.N-v,v+D.N/10,D.ps[i]*D.N/100],
+  `รวมกัน ${D.ps[i]}% + ${D.ps[j]}% = ${D.ps[i]+D.ps[j]}%<br>${D.ps[i]+D.ps[j]}/100 × ${fmt(D.N)} = <b>${fmt(v)} ${D.S.u}</b>`,pieFig(D.cats,D.ps))},
+()=>{const D=pieData(),i=ri(0,D.k-1),m=D.ps[i]*D.N/100;
+  return numQ(`จากแผนภูมิแสดง${D.S.t} ถ้า “${D.cats[i]}” มี ${fmt(m)} ${D.S.u} ${D.S.all}ทั้งหมดมีกี่${D.S.u}`,D.N,D.S.u,[m*D.ps[i]/10,D.N*2,D.N/2,m*10],
+  `${D.ps[i]}% คิดเป็น ${fmt(m)} ${D.S.u}<br>1% = ${fmt(m)} ÷ ${D.ps[i]} = ${fmt(m/D.ps[i])} → 100% = <b>${fmt(D.N)} ${D.S.u}</b>`,pieFig(D.cats,D.ps))},
+];
+
+/* ================= levels ================= */
+const CH={6:'รูปสามเหลี่ยม',7:'รูปหลายเหลี่ยม',8:'วงกลม',9:'รูปเรขาคณิตสามมิติ',10:'การนำเสนอข้อมูล',0:'ด่านสุดท้าย'};
+const ICON={
+ 6:'<path d="M12 3.5 L21.5 19.5 H2.5 Z"/>',
+ 7:'<path d="M7.5 3.5h9l5 8.5-5 8.5h-9l-5-8.5z"/>',
+ 8:'<circle cx="12" cy="12" r="8.5"/><path d="M12 12h8.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>',
+ 9:'<path d="M12 2.8l8.2 4.6v9.2L12 21.2l-8.2-4.6V7.4z"/><path d="M12 12l8.2-4.6M12 12v9.2M12 12L3.8 7.4"/>',
+ 10:'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5V12l6 6"/>',
+ 0:'<path d="M3 8l4.5 4L12 4.5l4.5 7.5L21 8l-2 11H5z"/>'};
+const LEVELS=[
+ {ch:6,name:'ชนิดและมุมของรูปสามเหลี่ยม',topic:'จำแนกตามมุม/ด้าน · มุมภายในรวม 180°',gens:L1},
+ {ch:6,name:'ความยาวรอบรูปและพื้นที่',topic:'½ × ฐาน × สูง · โจทย์ปัญหา',gens:L2},
+ {ch:7,name:'ลักษณะและมุมภายใน',topic:'(n − 2) × 180° · ความยาวรอบรูป',gens:L3},
+ {ch:7,name:'พื้นที่รูปหลายเหลี่ยม',topic:'คางหมู · รูปว่าว · แบ่งเป็นสามเหลี่ยม',gens:L4},
+ {ch:8,name:'ส่วนต่าง ๆ และเส้นรอบวง',topic:'รัศมี · คอร์ด · 2 × π × r',gens:L5},
+ {ch:8,name:'พื้นที่วงกลม',topic:'π × r × r · พื้นที่ส่วนที่แรเงา',gens:L6},
+ {ch:9,name:'ลักษณะและรูปคลี่',topic:'ปริซึม · พีระมิด · ทรงกระบอก · กรวย',gens:L7},
+ {ch:9,name:'ปริมาตรและความจุ',topic:'กว้าง × ยาว × สูง · ลิตร',gens:L8},
+ {ch:10,name:'แผนภูมิรูปวงกลม',topic:'อ่านร้อยละ · โจทย์ปัญหา',gens:L9},
+ {ch:0,name:'ด่านบอส รวมทุกบท',topic:'สุ่มโจทย์จากบทที่ 6–10 ปนกัน',gens:null},
+];
+const ALL=[L1,L2,L3,L4,L5,L6,L7,L8,L9];
+const chColor=c=>`var(--ch${c})`;
+
+function buildQs(li){
+  const lv=LEVELS[li];const qs=[],seen=new Set();let pool=[],tries=0;
+  if(!lv.gens){ // boss: one or two from every bank
+    const order=shuffle([0,1,2,3,4,5,6,7,8]).concat(shuffle([0,1,2,3,4,5,6,7,8]));
+    for(const b of order){if(qs.length>=10)break;let q,t=0;do{q=pick(ALL[b])();t++}while(seen.has(q.q)&&t<20);if(!seen.has(q.q)){seen.add(q.q);qs.push(q)}}
+  }
+  while(qs.length<10&&tries<300){
+    if(!pool.length)pool=shuffle(lv.gens||ALL.flat());
+    const q=pool.pop()();if(seen.has(q.q)){tries++;continue}seen.add(q.q);qs.push(q);
+  }
+  return shuffle(qs).map(q=>({...q,opts:shuffle(q.opts)}));
+}
+
+/* ================= storage ================= */
+const KEY='geo-p6-b2-v1';
+let save={stars:Array(10).fill(0),best:Array(10).fill(0),teacher:false,sound:true};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.stars))save={...save,...s}}catch(e){}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}};
+
+/* ================= sound ================= */
+let actx=null;
+function tone(seq){if(!save.sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();let t=actx.currentTime;
+  seq.forEach(([f,d,type='sine',v=.12])=>{const o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(actx.destination);o.start(t);o.stop(t+d);t+=d*.8})}catch(e){}}
+const sfx={ok:()=>tone([[660,.12],[990,.2]]),no:()=>tone([[220,.18,'triangle',.14],[170,.25,'triangle',.12]]),win:()=>tone([[523,.14],[659,.14],[784,.14],[1047,.35]]),tap:()=>tone([[440,.05,'sine',.05]])};
+
+/* ================= UI ================= */
+const $=id=>document.getElementById(id);
+const STAR='12,2.5 14.9,8.6 21.5,9.3 16.5,13.8 18,20.4 12,17 6,20.4 7.5,13.8 2.5,9.3 9.1,8.6';
+const starSvg=on=>`<svg viewBox="0 0 24 24"><polygon class="${on?'on':'off'}" points="${STAR}"/></svg>`;
+const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const unlocked=i=>save.teacher||i===0||save.stars[i-1]>0;
+
+function show(id){['home','quiz','result'].forEach(x=>$(x).hidden=x!==id);window.scrollTo({top:0})}
+
+function renderMap(){
+  const m=$('map');m.innerHTML='';
+  LEVELS.forEach((lv,i)=>{
+    const un=unlocked(i),b=document.createElement('button');
+    b.className='lv'+(un?'':' locked')+(lv.ch===0?' boss':'');b.style.setProperty('--c',chColor(lv.ch));
+    b.setAttribute('aria-label',`ด่าน ${i+1} ${lv.name}${un?'':' (ล็อกอยู่)'}`);
+    b.innerHTML=`<div class="lv-top"><div class="lv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${ICON[lv.ch]}</svg></div><div class="lv-num">${i+1}</div></div>
+      <div class="lv-ch">${lv.ch?'บทที่ '+lv.ch+' · '+CH[lv.ch]:'บอส · '+CH[0]}</div>
+      <div class="lv-name">${lv.name}</div><div class="lv-topic">${lv.topic}</div>
+      <div class="lv-foot"><div class="st">${[1,2,3].map(n=>starSvg(save.stars[i]>=n)).join('')}</div><span class="lv-best">${save.best[i]?'ดีที่สุด '+save.best[i]+'/10':(un?'ยังไม่เล่น':'')}</span></div>
+      ${un?'':`<span class="lock">${LOCK}</span>`}`;
+    if(un)b.onclick=()=>{sfx.tap();start(i)};else b.setAttribute('aria-disabled','true');
+    m.appendChild(b);
+  });
+  $('totalStars').textContent=save.stars.reduce((a,b)=>a+b,0)+'/30';
+  $('teacherBtn').setAttribute('aria-pressed',save.teacher);$('teacherBar').hidden=!save.teacher;
+}
+
+let G=null;
+function start(li){G={li,qs:buildQs(li),i:0,score:0,combo:0,res:[],done:false};
+  const lv=LEVELS[li];$('qlv').style.setProperty('--c',chColor(lv.ch));
+  $('qch').textContent=`ด่าน ${li+1} · ${lv.ch?'บทที่ '+lv.ch+' '+CH[lv.ch]:'ด่านบอส'}`;$('qname').textContent=lv.name;
+  show('quiz');renderQ()}
+
+function renderSegs(){$('segs').innerHTML=G.qs.map((_,k)=>`<div class="seg ${k<G.res.length?(G.res[k]?'ok':'no'):(k===G.i?'cur':'')}"></div>`).join('')}
+function renderQ(){
+  const q=G.qs[G.i];G.done=false;
+  $('qno').textContent=`ข้อ ${G.i+1} จาก 10`;$('qtext').innerHTML=q.q;$('fig').innerHTML=q.fig||'';
+  $('score').textContent=`${G.score} คะแนน`;
+  const c=$('combo');c.hidden=G.combo<3;c.textContent=`ถูกติดกัน ${G.combo} ข้อ`;
+  const o=$('opts');o.innerHTML='';
+  q.opts.forEach((t,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<span class="k">${'กขคง'[k]}</span><span></span>`;b.lastChild.textContent=t;b.onclick=()=>answer(k);o.appendChild(b)});
+  $('fb').innerHTML='';renderSegs();
+}
+function answer(k){
+  if(G.done)return;G.done=true;const q=G.qs[G.i],ok=q.opts[k]===q.ans;
+  const btns=[...$('opts').children];
+  btns.forEach((b,j)=>{b.disabled=true;if(q.opts[j]===q.ans)b.classList.add('correct');else if(j===k)b.classList.add('wrong');else b.classList.add('dim')});
+  G.res.push(ok);if(ok){G.score++;G.combo++;sfx.ok()}else{G.combo=0;sfx.no();G.wrong=G.wrong||[];G.wrong.push({q:q.q,your:q.opts[k],ans:q.ans,exp:q.exp})}
+  $('score').textContent=`${G.score} คะแนน`;const c=$('combo');c.hidden=G.combo<3;c.textContent=`ถูกติดกัน ${G.combo} ข้อ`;
+  const last=G.i===9;
+  $('fb').innerHTML=`<div class="fb ${ok?'ok':'no'}"><div class="fb-ico">${ok?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'}</div>
+    <div><h3>${ok?pick(['ถูกต้อง!','เก่งมาก!','ยอดเยี่ยม!','แม่นมาก!']):'ยังไม่ถูก คำตอบคือ '+q.ans}</h3><p>${q.exp}</p></div>
+    <button class="next" id="nextBtn">${last?'ดูผลคะแนน':'ข้อต่อไป'}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div>`;
+  $('nextBtn').onclick=next;$('nextBtn').focus({preventScroll:true});
+  $('fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+  renderSegs();
+}
+function next(){if(!G||!G.done)return;if(G.i<9){G.i++;renderQ();$('qtext').scrollIntoView({block:'nearest'})}else finish()}
+
+function finish(){
+  const li=G.li,s=G.score,st=s===10?3:s>=8?2:s>=6?1:0;const prevStars=save.stars[li];
+  save.stars[li]=Math.max(save.stars[li],st);save.best[li]=Math.max(save.best[li],s);persist();
+  const newlyUnlocked=st>0&&prevStars===0&&li<9&&!save.teacher;
+  const msg=st===3?'ถูกครบทุกข้อ สุดยอดนักเรขาคณิต!':st===2?'เก่งมาก อีกนิดเดียวจะได้ 3 ดาว':st===1?'ผ่านด่านแล้ว ลองอีกครั้งเพื่อเก็บดาวเพิ่ม':'ยังไม่ผ่าน ต้องตอบถูกอย่างน้อย 6 ข้อ ดูวิธีคิดด้านล่างแล้วลองใหม่นะ';
+  const canNext=li<9&&unlocked(li+1);
+  $('res').innerHTML=`<div class="res-stars">${[1,2,3].map(n=>starSvg(st>=n)).join('')}</div>
+    <h2>${st?'ผ่านด่าน '+(li+1)+'!':'เกือบแล้ว!'}</h2>
+    <div class="big">${s}<small>/10</small></div>
+    <p class="msg">${msg}${newlyUnlocked?'<br><b>ปลดล็อกด่าน '+(li+2)+' แล้ว</b>':''}</p>
+    <div class="res-btns">
+      ${canNext?`<button class="btn pri" id="rNext">ด่านต่อไป<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>`:''}
+      <button class="btn ${canNext?'':'pri'}" id="rAgain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>เล่นอีกครั้ง</button>
+      <button class="btn" id="rHome">กลับแผนที่</button>
+    </div>
+    ${G.wrong&&G.wrong.length?`<div class="review"><h3>ทบทวนข้อที่ตอบผิด (${G.wrong.length} ข้อ)</h3>${G.wrong.map(w=>`<div class="rv"><div class="rv-q">${w.q}</div><div class="rv-a">ตอบ <span class="y"></span> · คำตอบที่ถูก <span class="c"></span></div><div class="rv-e">${w.exp}</div></div>`).join('')}</div>`:''}`;
+  if(G.wrong)[...$('res').querySelectorAll('.rv')].forEach((el,k)=>{el.querySelector('.y').textContent=G.wrong[k].your;el.querySelector('.c').textContent=G.wrong[k].ans});
+  if(canNext)$('rNext').onclick=()=>start(li+1);
+  $('rAgain').onclick=()=>start(li);$('rHome').onclick=()=>{renderMap();show('home')};
+  show('result');
+  if(st>=1)sfx.win();if(st===3)confetti();
+}
+
+/* ================= confetti ================= */
+function confetti(){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cv=$('fx');cv.hidden=false;const ctx=cv.getContext('2d');const W=cv.width=innerWidth,H=cv.height=innerHeight;
+  const cs=getComputedStyle(document.documentElement);const cols=['--p1','--p2','--p3','--p4','--p5','--mark'].map(v=>cs.getPropertyValue(v).trim());
+  const ps=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*120,y:H*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,s:Math.random()*8+5,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:pick(cols),sh:ri(0,2)}));
+  let f=0;(function loop(){ctx.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;
+    if(p.sh===0){ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s)}else if(p.sh===1){ctx.beginPath();ctx.arc(0,0,p.s/2,0,7);ctx.fill()}else{ctx.beginPath();ctx.moveTo(0,-p.s/2);ctx.lineTo(p.s/2,p.s/2);ctx.lineTo(-p.s/2,p.s/2);ctx.fill()}ctx.restore()});
+    if(++f<150)requestAnimationFrame(loop);else{ctx.clearRect(0,0,W,H);cv.hidden=true}})();
+}
+
+/* ================= controls ================= */
+const SOUND_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const SOUND_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+function syncSound(){$('soundBtn').innerHTML=save.sound?SOUND_ON:SOUND_OFF;$('soundBtn').setAttribute('aria-pressed',save.sound)}
+$('soundBtn').onclick=()=>{save.sound=!save.sound;persist();syncSound();sfx.tap()};
+$('teacherBtn').onclick=()=>{save.teacher=!save.teacher;persist();renderMap()};
+let resetArm=false;
+$('resetBtn').onclick=()=>{if(!resetArm){resetArm=true;$('resetBtn').textContent='กดอีกครั้งเพื่อยืนยันการล้างดาว';setTimeout(()=>{resetArm=false;$('resetBtn').textContent='ล้างดาวทั้งหมด'},4000);return}
+  save.stars=Array(10).fill(0);save.best=Array(10).fill(0);persist();resetArm=false;$('resetBtn').textContent='ล้างดาวทั้งหมด';renderMap()};
+$('backBtn').onclick=()=>{renderMap();show('home')};
+document.addEventListener('keydown',e=>{
+  if($('quiz').hidden||!G)return;
+  if(!G.done&&['1','2','3','4'].includes(e.key)){answer(+e.key-1)}
+  else if(G.done&&(e.key==='Enter'||e.key===' ')&&document.activeElement?.id!=='nextBtn'){e.preventDefault();next()}
+});
+syncSound();renderMap();
+</script>
+
+</body>
+</html>
