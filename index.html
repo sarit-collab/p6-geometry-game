@@ -134,7 +134,8 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.25;margin:0;te
 .combo{font-size:.82rem;font-weight:700;color:#152238;background:var(--mark);padding:3px 10px;border-radius:999px}
 .qtext{font-family:var(--display);font-weight:400;font-size:clamp(1.12rem,2.6vw,1.38rem);line-height:1.5;margin:0 0 6px}
 .qtext .pi{font-family:var(--body);font-size:.8em;color:var(--muted);white-space:nowrap}
-.figwrap{display:flex;flex-direction:column;align-items:center;margin:10px 0 4px}
+.figwrap{display:flex;flex-direction:column;align-items:center;margin:14px 0 4px;padding:14px 10px 10px;border-radius:18px;border:1px solid var(--line);
+  background-color:var(--soft);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:16px 16px;background-position:center}
 .figwrap:empty{display:none}
 svg.fig{width:100%;max-width:400px;height:auto;overflow:visible}
 .fig .shape{fill:var(--fig-fill);stroke:var(--fig-line);stroke-width:2.5;stroke-linejoin:round}
@@ -148,6 +149,20 @@ svg.fig{width:100%;max-width:400px;height:auto;overflow:visible}
 .fig .lbl.hl{fill:var(--fig-hl)}
 .fig .lbl.q{fill:var(--bad);font-size:18px}
 .fig .lbl.sm{font-size:13px;font-weight:500}
+.fig .dim{stroke:var(--muted);stroke-width:1.4}
+.fig .dimx{stroke:var(--muted);stroke-width:1;opacity:.6;fill:none}
+.fig .arwh{fill:var(--muted)}
+.fig .angf{fill:color-mix(in srgb,var(--fig-hl) 20%,transparent);stroke:var(--fig-hl);stroke-width:1.6}
+.fig .angf.q{fill:color-mix(in srgb,var(--bad) 22%,transparent);stroke:var(--bad)}
+.fig .rmark{fill:none;stroke:var(--fig-hl);stroke-width:1.8}
+.fig .chip rect{fill:var(--card);stroke:var(--line);stroke-width:1.5;filter:drop-shadow(0 1px 1.5px rgba(21,34,56,.12))}
+.fig .chip text{fill:var(--ink);font:600 14px var(--body)}
+.fig .chip.hl rect{stroke:var(--fig-hl);fill:color-mix(in srgb,var(--fig-hl) 10%,var(--card))}
+.fig .chip.hl text{fill:var(--fig-hl)}
+.fig .chip.ang rect{stroke:var(--fig-hl)}
+.fig .chip.ang text{font-size:13px}
+.fig .chip.q rect{fill:var(--bad);stroke:var(--bad)}
+.fig .chip.q text{fill:#fff;font-weight:700;font-size:15px}
 .fig .plbl{fill:var(--ink);stroke:var(--card);stroke-width:4px;paint-order:stroke;font:700 14px var(--body)}
 .fig .p0{fill:var(--p1)}.fig .p1{fill:var(--p2)}.fig .p2{fill:var(--p3)}.fig .p3{fill:var(--p4)}.fig .p4{fill:var(--p5)}
 .fig .pslice{stroke:var(--card);stroke-width:2}
@@ -317,150 +332,185 @@ function txtQ(q,ans,wrongs,exp,fig=''){
 const factGen=bank=>()=>{const f=pick(bank);return txtQ(f.q,f.a,shuffle(f.w),f.e,f.fig?f.fig():'')};
 
 /* ================= figure helpers (SVG) ================= */
-const S=(w,h,inner,cap)=>`<svg class="fig" viewBox="0 0 ${w} ${h}" role="img" aria-hidden="true">${inner}</svg>`+(cap?`<p class="figcap">${cap}</p>`:'');
-const T=(x,y,s,c='lbl',a='middle')=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" class="${c}" text-anchor="${a}" dominant-baseline="middle">${s}</text>`;
-const P=(pts,c='shape')=>`<polygon class="${c}" points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}"/>`;
-const Ln=(a,b,c='edge')=>`<line class="${c}" x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}"/>`;
+const NS='http://www.w3.org/2000/svg';
+const DEFS='<defs><marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="arwh" d="M0 1.5L9 5L0 8.5z"/></marker></defs>';
+const S=(w,h,inner,cap)=>`<svg class="fig" viewBox="0 0 ${w} ${h}" role="img" aria-hidden="true">${DEFS}${inner}</svg>`+(cap?`<p class="figcap">${cap}</p>`:'');
+const f1=n=>(+n).toFixed(1);
+const T=(x,y,s,c='lbl',a='middle')=>`<text x="${f1(x)}" y="${f1(y)}" class="${c}" text-anchor="${a}" dominant-baseline="central">${s}</text>`;
+// a measurement tag: pill-shaped label (rect is sized after render by chipify)
+const chip=(x,y,s,k='')=>`<g class="chip${s==='?'?' q':(k?' '+k:'')}"><text x="${f1(x)}" y="${f1(y)}" text-anchor="middle" dominant-baseline="central">${s}</text></g>`;
+const P=(pts,c='shape')=>`<polygon class="${c}" points="${pts.map(p=>f1(p[0])+','+f1(p[1])).join(' ')}"/>`;
+const Ln=(a,b,c='edge')=>`<line class="${c}" x1="${f1(a[0])}" y1="${f1(a[1])}" x2="${f1(b[0])}" y2="${f1(b[1])}"/>`;
 const NOTE='รูปไม่ได้วาดตามมาตราส่วน';
+const nrm=(x,y)=>{const d=Math.hypot(x,y)||1;return [x/d,y/d]};
 
-function fit(pts,W=380,H=230,pad=46){
+function chipify(root){
+  root.querySelectorAll('g.chip').forEach(g=>{
+    if(g.querySelector('rect'))return;const t=g.querySelector('text');let b=null;
+    try{b=t.getBBox()}catch(e){}
+    if(!b||!b.width){const n=t.textContent.length;b={x:+t.getAttribute('x')-n*4.3,y:+t.getAttribute('y')-9,width:n*8.6,height:18}}
+    const px=8,py=3.5;let w=b.width+2*px;const h=b.height+2*py;if(w<h)w=h;
+    const r=document.createElementNS(NS,'rect');
+    r.setAttribute('x',b.x+b.width/2-w/2);r.setAttribute('y',b.y-py);r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('rx',h/2);
+    g.insertBefore(r,t);
+  });
+}
+function fit(pts,W=400,H=250,pad=60){
   const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
   const mnx=Math.min(...xs),mxx=Math.max(...xs),mny=Math.min(...ys),mxy=Math.max(...ys);
   const w=(mxx-mnx)||1,h=(mxy-mny)||1;const s=Math.min((W-2*pad)/w,(H-2*pad)/h);
   const ox=(W-w*s)/2,oy=(H-h*s)/2;
   return pts.map(([x,y])=>[ox+(x-mnx)*s,H-oy-(y-mny)*s]);
 }
+// dimension line drawn parallel to edge a-b, on the side away from `ctr`, with arrows and a tag in the middle
+function dim(a,b,label,ctr,k='',off=24){
+  if(!label)return '';
+  const [ux,uy]=nrm(b[0]-a[0],b[1]-a[1]);let nx=-uy,ny=ux;
+  const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];if((m[0]-ctr[0])*nx+(m[1]-ctr[1])*ny<0){nx=-nx;ny=-ny}
+  const A=[a[0]+nx*off,a[1]+ny*off],B=[b[0]+nx*off,b[1]+ny*off];
+  return `<path class="dimx" d="M${f1(a[0]+nx*5)} ${f1(a[1]+ny*5)}L${f1(A[0]+nx*5)} ${f1(A[1]+ny*5)}M${f1(b[0]+nx*5)} ${f1(b[1]+ny*5)}L${f1(B[0]+nx*5)} ${f1(B[1]+ny*5)}"/>`
+    +`<line class="dim" x1="${f1(A[0])}" y1="${f1(A[1])}" x2="${f1(B[0])}" y2="${f1(B[1])}" marker-start="url(#arw)" marker-end="url(#arw)"/>`
+    +chip((A[0]+B[0])/2,(A[1]+B[1])/2,label,k);
+}
+// angle at p between rays to q1 and q2: shaded arc (or square for 90°) and a tag along the bisector
+function angleMark(p,q1,q2,label){
+  const u1=nrm(q1[0]-p[0],q1[1]-p[1]),u2=nrm(q2[0]-p[0],q2[1]-p[1]);
+  const ang=Math.acos(Math.max(-1,Math.min(1,u1[0]*u2[0]+u1[1]*u2[1])));
+  let s='';
+  if(label==='90°'){const k=13;s+=`<path class="rmark" d="M${f1(p[0]+u1[0]*k)} ${f1(p[1]+u1[1]*k)}L${f1(p[0]+(u1[0]+u2[0])*k)} ${f1(p[1]+(u1[1]+u2[1])*k)}L${f1(p[0]+u2[0]*k)} ${f1(p[1]+u2[1]*k)}"/>`}
+  else{const r=21,A=[p[0]+u1[0]*r,p[1]+u1[1]*r],B=[p[0]+u2[0]*r,p[1]+u2[1]*r];const sw=(u1[0]*u2[1]-u1[1]*u2[0])>0?1:0;
+    s+=`<path class="angf${label==='?'?' q':''}" d="M${f1(p[0])} ${f1(p[1])}L${f1(A[0])} ${f1(A[1])}A${r} ${r} 0 0 ${sw} ${f1(B[0])} ${f1(B[1])}Z"/>`}
+  const bis=nrm(u1[0]+u2[0],u1[1]+u2[1]);const d=Math.max(40,Math.min(72,15/Math.sin(ang/2)+8));
+  return s+chip(p[0]+bis[0]*d,p[1]+bis[1]*d,label,'ang');
+}
+function rightMark(p,dx,dy,sz=12){return `<path class="rmark" d="M${p[0]+dx*sz} ${p[1]} L${p[0]+dx*sz} ${p[1]+dy*sz} L${p[0]} ${p[1]+dy*sz}"/>`}
+const ctr=pts=>[pts.reduce((a,p)=>a+p[0],0)/pts.length,pts.reduce((a,p)=>a+p[1],0)/pts.length];
+const dot=(p,r=3.5)=>`<circle class="dot" cx="${f1(p[0])}" cy="${f1(p[1])}" r="${r}"/>`;
+
 function triFromAngles(a,b){
   const c=180-a-b;const AC=Math.sin(rad(b))/Math.sin(rad(c));
-  return fit([[0,0],[1,0],[AC*Math.cos(rad(a)),AC*Math.sin(rad(a))]]);
+  return fit([[0,0],[1,0],[AC*Math.cos(rad(a)),AC*Math.sin(rad(a))]],400,250,26);
 }
 function triFromSides(s){ // s = [AB, BC, CA]
   const [ab,bc,ca]=s;const cosA=(ab*ab+ca*ca-bc*bc)/(2*ab*ca);const A=Math.acos(Math.max(-1,Math.min(1,cosA)));
   return fit([[0,0],[ab,0],[ca*Math.cos(A),ca*Math.sin(A)]]);
 }
 function triFig(pts,ang=[],side=[],extra='',cap){
-  const g=[(pts[0][0]+pts[1][0]+pts[2][0])/3,(pts[0][1]+pts[1][1]+pts[2][1])/3];
-  let s=P(pts)+extra;
-  pts.forEach((p,i)=>{if(!ang[i])return;const dx=g[0]-p[0],dy=g[1]-p[1],d=Math.hypot(dx,dy);const k=Math.min(36,d*.5);
-    s+=T(p[0]+dx/d*k,p[1]+dy/d*k,ang[i],ang[i]==='?'?'lbl q':'lbl sm')});
-  side.forEach((t,i)=>{if(!t)return;const a=pts[i],b=pts[(i+1)%3];const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
-    const dx=m[0]-g[0],dy=m[1]-g[1],d=Math.hypot(dx,dy)||1;s+=T(m[0]+dx/d*20,m[1]+dy/d*20,t,t==='?'?'lbl q':'lbl')});
-  return S(380,230,s,cap);
+  const g=ctr(pts);let s=P(pts)+extra;
+  side.forEach((t,i)=>{if(t)s+=dim(pts[i],pts[(i+1)%3],t,g)});
+  pts.forEach((p,i)=>{if(ang[i])s+=angleMark(p,pts[(i+1)%3],pts[(i+2)%3],ang[i])});
+  pts.forEach(p=>s+=dot(p,3));
+  return S(400,250,s,cap);
 }
-function rightMark(p,dx,dy,sz=11){return `<path class="thin" d="M${p[0]+dx*sz} ${p[1]} L${p[0]+dx*sz} ${p[1]+dy*sz} L${p[0]} ${p[1]+dy*sz}"/>`}
 function triArea(b,h,bl,hl){
   const hh=Math.max(b*.38,Math.min(h,b*1.05));const cx=b*(.3+Math.random()*.4);
-  const pts=fit([[0,0],[b,0],[cx,hh]],380,230,40);
-  const C=pts[2],F=[C[0],pts[0][1]];
-  const extra=Ln(C,F,'dash')+rightMark(F,1,-1);
-  let s=P(pts)+extra+T((pts[0][0]+pts[1][0])/2,pts[0][1]+20,bl)+T(C[0]+10,(C[1]+F[1])/2,hl,hl==='?'?'lbl q':'lbl hl','start');
-  return S(380,230,s,NOTE);
+  const pts=fit([[0,0],[b,0],[cx,hh]]);const C=pts[2],F=[C[0],pts[0][1]];
+  const s=P(pts)+Ln(C,F,'dash')+rightMark(F,1,-1)+dim(pts[0],pts[1],bl,ctr(pts))+chip(C[0],(C[1]+F[1])/2,hl,'hl')+pts.map(p=>dot(p,3)).join('');
+  return S(400,250,s,NOTE);
 }
 function rightTri(b,h){
   const hh=Math.max(b*.45,Math.min(h,b*1.6));
-  const pts=fit([[0,0],[b,0],[0,hh]],380,230,44);
-  return triFig(pts,[],[b+' ซม.','',h+' ซม.'],rightMark(pts[0],1,-1,13),NOTE);
+  const pts=fit([[0,0],[b,0],[0,hh]]);
+  return triFig(pts,[],[b+' ซม.','',h+' ซม.'],rightMark(pts[0],1,-1,14),NOTE);
 }
-function polyPts(n,cx=190,cy=118,r=92){
+function polyPts(n,cx=200,cy=122,r=94){
   const st=90+180/n;const out=[];for(let i=0;i<n;i++){const a=rad(st+i*360/n);out.push([cx+r*Math.cos(a),cy+r*Math.sin(a)])}return out;
 }
 function polyFig(n,o={}){
-  const pts=polyPts(n);let s=P(pts);
+  const pts=polyPts(n),c=[200,122];let s=P(pts);
   if(o.diag){for(let i=2;i<n-1;i++)s+=Ln(pts[0],pts[i],'dash')}
-  const c=[190,118];
-  const lab=(i,t)=>{const a=pts[i],b=pts[(i+1)%n];const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];const dx=m[0]-c[0],dy=m[1]-c[1],d=Math.hypot(dx,dy);return T(m[0]+dx/d*20,m[1]+dy/d*20,t)};
-  if(o.side)s+=lab(n-1,o.side);
-  if(o.sides)o.sides.forEach((t,i)=>s+=lab(i,t));
-  pts.forEach(p=>s+=`<circle class="dot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/>`);
-  return S(380,236,s,o.sides?NOTE:'');
+  pts.forEach(p=>s+=dot(p));
+  if(o.side)s+=dim(pts[n-1],pts[0],o.side,c);
+  if(o.sides)o.sides.forEach((t,i)=>{const a=pts[i],b=pts[(i+1)%n];const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];const [dx,dy]=nrm(m[0]-c[0],m[1]-c[1]);s+=chip(m[0]+dx*16,m[1]+dy*16,t)});
+  return S(400,250,s,o.sides?NOTE:'');
 }
 function trapFig(a,b,h){
-  const s=P([[50,182],[330,182],[255,58],[125,58]])+Ln([125,58],[125,182],'dash')+rightMark([125,182],1,-1)
-    +T(190,40,a)+T(190,204,b)+T(117,120,h,h==='?'?'lbl q':'lbl hl','end');
-  return S(380,220,s,NOTE);
+  const BL=[60,195],BR=[340,195],TR=[262,72],TL=[138,72],c=[200,133];
+  const s=P([BL,BR,TR,TL])+Ln(TL,[138,195],'dash')+rightMark([138,195],1,-1)
+    +dim(TL,TR,a,c)+dim(BL,BR,b,c)+chip(138,133,h,'hl');
+  return S(400,262,s,NOTE);
 }
 function kiteFig(d1,d2,rh){
-  const p=rh?[[190,18],[300,112],[190,206],[80,112]]:[[190,18],[268,82],[190,206],[112,82]];
+  const p=rh?[[200,20],[320,118],[200,216],[80,118]]:[[200,20],[282,88],[200,216],[118,88]];
   const my=p[1][1];
-  const s=P(p)+Ln(p[0],p[2],'dash')+Ln(p[3],p[1],'dash')+rightMark([190,my],1,-1,10)
-    +T(198,(my+206)/2+10,d1,'lbl hl','start')+T((p[3][0]+190)/2,my-14,d2,'lbl hl');
-  return S(380,224,s,NOTE);
+  const s=P(p)+Ln(p[0],p[2],'dash')+Ln(p[3],p[1],'dash')+rightMark([200,my],1,-1,11)
+    +chip(200,(my+216)/2+6,d1,'hl')+chip((p[3][0]+200)/2-4,my,d2,'hl');
+  return S(400,236,s,NOTE);
 }
 function splitFig(d,h1,h2){
-  const A=[40,112],C=[340,112],B=[150,30],D=[240,196];
-  const s=P([A,B,C,D])+Ln(A,C,'edge')+Ln(B,[150,112],'dash')+Ln(D,[240,112],'dash')+rightMark([150,112],1,-1,9)+rightMark([240,112],-1,1,9)
-    +T(296,98,d,'lbl')+T(158,72,h1,'lbl hl','start')+T(248,154,h2,'lbl hl','start')
-    +T(28,112,'ก','lbl sm')+T(352,112,'ค','lbl sm')+T(150,16,'ข','lbl sm')+T(240,214,'ง','lbl sm');
-  return S(380,226,s,NOTE);
+  const A=[40,120],C=[360,120],B=[150,36],D=[250,206];
+  const s=P([A,B,C,D])+Ln(A,C,'edge')+Ln(B,[150,120],'dash')+Ln(D,[250,120],'dash')+rightMark([150,120],1,-1,10)+rightMark([250,120],-1,1,10)
+    +chip(310,120,d)+chip(150,80,h1,'hl')+chip(250,165,h2,'hl')+[A,B,C,D].map(p=>dot(p)).join('')
+    +T(26,120,'ก','lbl sm')+T(374,120,'ค','lbl sm')+T(150,20,'ข','lbl sm')+T(250,224,'ง','lbl sm');
+  return S(400,236,s,NOTE);
 }
 function houseFig(w,hr,ht){
-  const s=P([[90,100],[290,100],[290,196],[90,196]])+P([[90,100],[290,100],[190,26]],'shape2')+Ln([190,26],[190,100],'dash')+rightMark([190,100],1,-1,9)
-    +T(190,214,w)+T(82,148,hr,'lbl','end')+T(198,66,ht,'lbl hl','start');
-  return S(380,226,s,NOTE);
+  const s=P([[100,104],[300,104],[300,200],[100,200]])+P([[100,104],[300,104],[200,30]],'shape2')+Ln([200,30],[200,104],'dash')+rightMark([200,104],1,-1,10)
+    +dim([100,200],[300,200],w,[200,150])+dim([100,104],[100,200],hr,[200,150])+chip(200,70,ht,'hl');
+  return S(400,250,s,NOTE);
 }
 function circFig(mode,label){
-  const c=[190,112],r=88;let s=`<circle class="shape" cx="190" cy="112" r="${r}"/>`;
-  if(mode==='r'){s+=Ln(c,[c[0]+r,c[1]],'edge')+T(c[0]+r/2,c[1]-14,label,label==='?'?'lbl q':'lbl hl')}
-  if(mode==='d'){s+=Ln([c[0]-r,c[1]],[c[0]+r,c[1]],'edge')+T(c[0],c[1]-14,label,label==='?'?'lbl q':'lbl hl')}
-  s+=`<circle class="dot" cx="190" cy="112" r="4"/>`;
-  return S(380,224,s);
+  const c=[200,120],r=90;let s=`<circle class="shape" cx="200" cy="120" r="${r}"/>`;
+  if(mode==='r'){s+=Ln(c,[c[0]+r,c[1]],'edge')+dot(c,4)+dot([c[0]+r,c[1]])+chip(c[0]+r/2,c[1],label,'hl')}
+  if(mode==='d'){s+=Ln([c[0]-r,c[1]],[c[0]+r,c[1]],'edge')+dot([c[0]-r,c[1]])+dot([c[0]+r,c[1]])+chip(c[0],c[1],label,'hl')}
+  return S(400,240,s);
 }
 function partsFig(){
-  const c=[190,112],r=90,pt=a=>[c[0]+r*Math.cos(rad(a)),c[1]+r*Math.sin(rad(a))];
+  const c=[200,120],r=92,pt=a=>[c[0]+r*Math.cos(rad(a)),c[1]+r*Math.sin(rad(a))];
   const A=pt(-55),B=pt(180),C=pt(0),D=pt(115),E=pt(55);
-  let s=`<circle class="shape" cx="190" cy="112" r="${r}"/>`+Ln(c,A)+Ln(B,C)+Ln(D,E);
-  [[A,'A',-55],[B,'B',180],[C,'C',0],[D,'D',115],[E,'E',55]].forEach(([p,t,a])=>{s+=`<circle class="dot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/>`+T(c[0]+(r+16)*Math.cos(rad(a)),c[1]+(r+16)*Math.sin(rad(a)),t)});
-  s+=`<circle class="dot" cx="190" cy="112" r="4"/>`+T(198,126,'O','lbl','start');
-  return S(380,232,s);
+  let s=`<circle class="shape" cx="200" cy="120" r="${r}"/>`+Ln(c,A)+Ln(B,C)+Ln(D,E);
+  [[A,'A',-55],[B,'B',180],[C,'C',0],[D,'D',115],[E,'E',55]].forEach(([p,t,a])=>{s+=dot(p)+T(c[0]+(r+17)*Math.cos(rad(a)),c[1]+(r+17)*Math.sin(rad(a)),t)});
+  s+=dot(c,4)+T(208,134,'O','lbl','start');
+  return S(400,240,s);
 }
 function ringFig(R,r){
-  const s=`<path class="shape2" fill-rule="evenodd" d="M100 112a90 90 0 1 0 180 0a90 90 0 1 0 -180 0M145 112a45 45 0 1 0 90 0a45 45 0 1 0 -90 0"/>`
-    +`<circle class="thin" cx="190" cy="112" r="45"/>`+Ln([190,112],[190,22],'edge')+Ln([190,112],[235,112],'edge')+`<circle class="dot" cx="190" cy="112" r="4"/>`
-    +T(198,62,R,'lbl','start')+T(212,100,r,'lbl hl');
-  return S(380,224,s);
+  const s=`<path class="shape2" fill-rule="evenodd" d="M108 118a92 92 0 1 0 184 0a92 92 0 1 0 -184 0M154 118a46 46 0 1 0 92 0a46 46 0 1 0 -92 0"/>`
+    +`<circle class="hole" cx="200" cy="118" r="46"/>`+Ln([200,118],[200,26],'edge')+Ln([200,118],[246,118],'edge')+dot([200,118],4)
+    +chip(200,49,R)+chip(223,118,r,'hl');
+  return S(400,236,s);
 }
 function sqCircFig(side){
-  const s=`<rect class="shape2" x="100" y="22" width="180" height="180"/><circle class="hole" cx="190" cy="112" r="90"/>`+T(190,216,side)+T(92,112,side,'lbl','end');
-  return S(380,232,s);
+  const s=`<rect class="shape2" x="110" y="24" width="180" height="180"/><circle class="hole" cx="200" cy="114" r="90"/>`+dot([200,114],3)
+    +dim([110,204],[290,204],side,[200,114])+dim([110,24],[110,204],side,[200,114]);
+  return S(400,252,s);
 }
 function semiFig(r){
-  const s=`<path class="shape" d="M90 170 A100 100 0 0 1 290 170 Z"/>`+Ln([190,170],[290,170],'edge')+`<circle class="dot" cx="190" cy="170" r="4"/>`+T(240,156,r,'lbl hl');
-  return S(380,200,s);
+  const s=`<path class="shape" d="M100 172 A100 100 0 0 1 300 172 Z"/>`+Ln([200,172],[300,172],'edge')+dot([200,172],4)+chip(250,172,r,'hl');
+  return S(400,200,s);
 }
 function boxFig(l,w,h,cap=''){
-  const s=P([[60,100],[230,100],[300,55],[130,55]],'shape2')+P([[230,100],[300,55],[300,150],[230,195]],'shape')+P([[60,100],[230,100],[230,195],[60,195]],'shape')
-    +T(145,214,l)+T(272,182,w,'lbl','start')+T(52,148,h,'lbl','end');
-  return S(380,226,s,cap||NOTE);
+  const c=[155,150];
+  const s=P([[70,105],[240,105],[310,60],[140,60]],'shape2')+P([[240,105],[310,60],[310,155],[240,200]],'shape')+P([[70,105],[240,105],[240,200],[70,200]],'shape')
+    +dim([70,200],[240,200],l,c)+dim([240,200],[310,155],w,[230,120])+dim([70,105],[70,200],h,c);
+  return S(400,250,s,cap||NOTE);
 }
 function blocksFig(lA,hA,lB,hB,w){
-  const s=P([[40,65],[160,65],[220,27],[100,27]],'shape2')+P([[160,65],[220,27],[220,157],[160,195]],'shape')+P([[40,65],[160,65],[160,195],[40,195]],'shape')
-    +P([[160,125],[280,125],[280,195],[160,195]],'shape')+P([[160,125],[280,125],[340,87],[220,87]],'shape2')+P([[280,125],[340,87],[340,157],[280,195]],'shape')
-    +T(100,214,lA)+T(220,214,lB)+T(32,130,hA,'lbl','end')+T(348,124,hB,'lbl','start')+T(318,186,w,'lbl','start');
-  return S(400,226,s,NOTE);
+  const s=P([[50,70],[170,70],[230,32],[110,32]],'shape2')+P([[170,70],[230,32],[230,162],[170,200]],'shape')+P([[50,70],[170,70],[170,200],[50,200]],'shape')
+    +P([[170,130],[290,130],[290,200],[170,200]],'shape')+P([[170,130],[290,130],[350,92],[230,92]],'shape2')+P([[290,130],[350,92],[350,162],[290,200]],'shape')
+    +dim([50,200],[170,200],lA,[110,150])+dim([170,200],[290,200],lB,[230,165])+dim([50,70],[50,200],hA,[110,135])
+    +dim([350,92],[350,162],hB,[300,140])+dim([290,200],[350,162],w,[290,140]);
+  return S(420,250,s,NOTE);
 }
 function pieFig(cats,ps,hide=-1){
-  const c=[112,114],r=94;let a0=-90,s='';
+  const c=[118,118],r=98;let a0=-90,s='',lb='';
   ps.forEach((p,i)=>{const a1=a0+p*3.6;const large=p>50?1:0;
     const x0=c[0]+r*Math.cos(rad(a0)),y0=c[1]+r*Math.sin(rad(a0)),x1=c[0]+r*Math.cos(rad(a1)),y1=c[1]+r*Math.sin(rad(a1));
-    s+=`<path class="pslice p${i}" d="M${c[0]} ${c[1]} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z"/>`;
-    const m=rad((a0+a1)/2);s+=T(c[0]+r*.62*Math.cos(m),c[1]+r*.62*Math.sin(m),i===hide?'?':p+'%','plbl');a0=a1});
+    s+=`<path class="pslice p${i}" d="M${c[0]} ${c[1]} L${f1(x0)} ${f1(y0)} A${r} ${r} 0 ${large} 1 ${f1(x1)} ${f1(y1)} Z"/>`;
+    const m=rad((a0+a1)/2);lb+=chip(c[0]+r*.64*Math.cos(m),c[1]+r*.64*Math.sin(m),i===hide?'?':p+'%');a0=a1});
   const y0=c[1]-(cats.length*30)/2+15;
-  cats.forEach((t,i)=>{s+=`<rect class="p${i}" x="228" y="${y0+i*30-8}" width="16" height="16" rx="4"/>`+T(252,y0+i*30,t,'lbl sm','start')});
-  return S(380,228,s);
+  cats.forEach((t,i)=>{lb+=`<rect class="p${i}" x="240" y="${y0+i*30-8}" width="16" height="16" rx="4"/>`+T(264,y0+i*30,t,'lbl sm','start')});
+  return S(400,236,s+lb);
 }
 function netFig(type){
   let s='';const sq=(x,y,z=44)=>P([[x,y],[x+z,y],[x+z,y+z],[x,y+z]]);
-  if(type==='cube'){const x0=102,y0=46;[[1,0],[0,1],[1,1],[2,1],[3,1],[1,2]].forEach(([i,j])=>s+=sq(x0+i*44,y0+j*44))}
-  if(type==='triPrism'){[100,160,220].forEach(x=>s+=P([[x,70],[x+60,70],[x+60,160],[x,160]]));s+=P([[160,70],[220,70],[190,18]],'shape2')+P([[160,160],[220,160],[190,212]],'shape2')}
-  if(type==='sqPyr'){s+=P([[155,80],[225,80],[225,150],[155,150]],'shape2')+P([[155,80],[225,80],[190,20]])+P([[155,150],[225,150],[190,210]])+P([[155,80],[155,150],[95,115]])+P([[225,80],[225,150],[285,115]])}
-  if(type==='cyl'){s+=P([[110,72],[270,72],[270,152],[110,152]])+`<circle class="shape2" cx="190" cy="42" r="30"/><circle class="shape2" cx="190" cy="182" r="30"/>`}
-  if(type==='cone'){const p=a=>[190+130*Math.cos(rad(a)),18+130*Math.sin(rad(a))];const A=p(58),B=p(122);
-    s+=`<path class="shape" d="M190 18 L${A[0].toFixed(1)} ${A[1].toFixed(1)} A130 130 0 0 1 ${B[0].toFixed(1)} ${B[1].toFixed(1)} Z"/><circle class="shape2" cx="190" cy="178" r="30"/>`}
-  if(type==='triPyr'){const A=[190,18],B=[86,198],C=[294,198],ab=[138,108],bc=[190,198],ca=[242,108];s+=P([A,ab,ca])+P([ab,B,bc])+P([ca,bc,C])+P([ab,bc,ca],'shape2')}
-  if(type==='pentPrism'){[60,112,164,216,268].forEach(x=>s+=P([[x,80],[x+52,80],[x+52,150],[x,150]]));
-    const pp=(cx,cy,r,flip)=>{const o=[];for(let i=0;i<5;i++){const a=rad((flip?90:-90)+i*72);o.push([cx+r*Math.cos(a),cy+r*Math.sin(a)])}return o};
-    s+=P(pp(190,80-42,44,true).map(p=>[p[0],p[1]]),'shape2')}
-  return S(380,226,s);
+  if(type==='cube'){const x0=112,y0=46;[[1,0],[0,1],[1,1],[2,1],[3,1],[1,2]].forEach(([i,j])=>s+=sq(x0+i*44,y0+j*44))}
+  if(type==='triPrism'){[110,170,230].forEach(x=>s+=P([[x,70],[x+60,70],[x+60,160],[x,160]]));s+=P([[170,70],[230,70],[200,18]],'shape2')+P([[170,160],[230,160],[200,212]],'shape2')}
+  if(type==='sqPyr'){s+=P([[165,80],[235,80],[235,150],[165,150]],'shape2')+P([[165,80],[235,80],[200,20]])+P([[165,150],[235,150],[200,210]])+P([[165,80],[165,150],[105,115]])+P([[235,80],[235,150],[295,115]])}
+  if(type==='cyl'){s+=P([[120,72],[280,72],[280,152],[120,152]])+`<circle class="shape2" cx="200" cy="42" r="30"/><circle class="shape2" cx="200" cy="182" r="30"/>`}
+  if(type==='cone'){const p=a=>[200+130*Math.cos(rad(a)),18+130*Math.sin(rad(a))];const A=p(58),B=p(122);
+    s+=`<path class="shape" d="M200 18 L${f1(A[0])} ${f1(A[1])} A130 130 0 0 1 ${f1(B[0])} ${f1(B[1])} Z"/><circle class="shape2" cx="200" cy="178" r="30"/>`}
+  if(type==='triPyr'){const A=[200,18],B=[96,198],C=[304,198],ab=[148,108],bc=[200,198],ca=[252,108];s+=P([A,ab,ca])+P([ab,B,bc])+P([ca,bc,C])+P([ab,bc,ca],'shape2')}
+  return S(400,226,s);
 }
 
 /* ================= question banks ================= */
@@ -839,7 +889,7 @@ function start(li){G={li,qs:buildQs(li),i:0,score:0,combo:0,res:[],done:false};
 function renderSegs(){$('segs').innerHTML=G.qs.map((_,k)=>`<div class="seg ${k<G.res.length?(G.res[k]?'ok':'no'):(k===G.i?'cur':'')}"></div>`).join('')}
 function renderQ(){
   const q=G.qs[G.i];G.done=false;
-  $('qno').textContent=`ข้อ ${G.i+1} จาก 10`;$('qtext').innerHTML=q.q;$('fig').innerHTML=q.fig||'';
+  $('qno').textContent=`ข้อ ${G.i+1} จาก 10`;$('qtext').innerHTML=q.q;$('fig').innerHTML=q.fig||'';chipify($('fig'));
   $('score').textContent=`${G.score} คะแนน`;
   const c=$('combo');c.hidden=G.combo<3;c.textContent=`ถูกติดกัน ${G.combo} ข้อ`;
   const o=$('opts');o.innerHTML='';
